@@ -1,0 +1,6 @@
+name,concentration_average,discharge_min,discharge_max
+mc2-1, 22, 0, 0
+mc2-2, 4, 0, 0
+mc2-3, 27, 0, 0
+sv1, 0, 1.4e3, 3.6e3
+sv6, 0, 0.6e4, 1.2e4
