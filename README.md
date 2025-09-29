@@ -1,3 +1,5 @@
+"Python scripts for modelling groundwater flow and transport at seafloor pockmarks"
+
 Python scripts to run, build, and postprocess MODFLOW6 models of the Hutt River Pockmarks
 
 Shield: [![CC BY-NC-ND 4.0][cc-by-nc-nd-shield]][cc-by-nc-nd]
