@@ -78,7 +78,7 @@ def get_boundary_values(time="current", scenario='summer', step=None):
     }
 
 
-def get_tdis_params(scenario='steady'):
+def  get_tdis_params(scenario='steady'):
     if scenario=='steady':
         return {
             'perlen': 1e6,

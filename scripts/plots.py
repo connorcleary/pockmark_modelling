@@ -330,7 +330,8 @@ def plot_aquitard_thickness(modelgrid=False):
         sv1 = (-41.242, 174.886)
         sv6 = (-41.24787+0.0018, 174.8878)
         # points = np.genfromtxt("/home/connor/PycharmProjects/pockmarks/data/gis/coordinates.csv", delimiter=',', skip_header=1)[:, 1:]
-        points = np.genfromtxt("/home/connor/PycharmProjects/pockmarks/data/gis/coordinates_from_harding_appendix.csv",
+        path = project_dir.joinpath('data', 'coordinates_from_harding_appendix.csv')
+        points = np.genfromtxt(path,
                                delimiter=',', skip_header=1)[:,1:]
         mc_names = ["MC2-1", "MC2-2", "MC2-3"]
         sv_names = ["SV1", "SV6"]
@@ -342,19 +343,20 @@ def plot_aquitard_thickness(modelgrid=False):
         f, ax = plt.subplots(figsize=(5, 4))
         plt.rcParams.update({'font.size': 7})
         ax.set_aspect('equal')
-        thickness = rasterio.open("/home/connor/PycharmProjects/pockmarks/data/gis/marine_thickness_masked_model.tif")
-        thck = show(thickness, ax=ax, cmap='grey', alpha=0.7, zorder=5)
+        thickness_path = project_dir.joinpath('data', 'marine_thickness_masked_model.tif')
+        thickness = rasterio.open(thickness_path)
+        thck = show(thickness, ax=ax, cmap='gist_earth', alpha=0.7, zorder=5)
         first = True
         for name, coord in zip(mc_names, mc_coords):
             nztm = transformer.transform(*coord)
-            ax.scatter(nztm[1], nztm[0], marker='v', color='peru', lw=0.75, s=15, label="Sediment Cores" if first else None, zorder=15, facecolors='none')
+            ax.scatter(nztm[1], nztm[0], marker='v', color='peru', lw=1, s=20, label="Sediment Cores" if first else None, zorder=15, facecolors='none')
             first = False
         first = True
         for name, coord in zip(sv_names, sv_coords):
             coord[0] += +0.0016666
             nztm = transformer.transform(*coord)
             print(nztm)
-            ax.scatter(nztm[1], nztm[0], marker='^', color='blue', lw=0.75,  s=15, label="Discharge Observations" if first else None, zorder=15, facecolors='none')
+            ax.scatter(nztm[1], nztm[0], marker='^', color='blue', lw=1,  s=20, label="Discharge Observations" if first else None, zorder=15, facecolors='none')
             first = False
 
         points[4][0] += +0.0016666
@@ -379,10 +381,10 @@ def plot_aquitard_thickness(modelgrid=False):
         ax.set_xlabel("Nztm x [m]")
         ax.legend(loc='upper right', fontsize=7)
         norm = mpl.colors.Normalize(vmin=thickness.statistics(1).min, vmax=thickness.statistics(1).max)
-        mappable = plt.cm.ScalarMappable(cmap='grey', norm=norm)
+        mappable = plt.cm.ScalarMappable(cmap='gist_earth', norm=norm)
         plt.colorbar(mappable, ax=ax, label="Petone Marine Distal (silt) thickness [m]", extend='both', alpha=0.7)
-        plt.show()
-        f.savefig("/home/connor/PycharmProjects/pockmarks/figures/aquitard_thickness_map.png", dpi=600)
+        savedir = unbacked_dir.joinpath('figures')
+        f.savefig(savedir.joinpath("aquitard_thickness_map.png"), dpi=600)
 
 def plot_aquitards_resistance():
     offshore = discretization.get_offshore()
@@ -1441,13 +1443,13 @@ if __name__=="__main__":
     # examples  = ((0, 5), (1, 5), (2, 5))
     # plot_changes_and_examples("base", names=names, examples=examples, version=1)
     # plot_examples_alternative_hypothesis()
-    # plot_aquitard_thickness()
+    plot_aquitard_thickness()
     # plot_alternate_hypotheses_pockmarks_and_model_vs_observed(['1average', 'hk1ave_new', 'c1ave_new'])
     # plot_alternate_hypotheses_pockmarks_and_model_vs_observed(['1average'], 1)
     # plot_alternative_hypotheses_changes(pockmark_number=5, dropping_names=False)
     # plot_conduit_and_patches_locations()
    # plot_multi_model_comparison()
     # plot_longer_swi()
-    plot_boundary_conditions()
+    # plot_boundary_conditions()
 
 
