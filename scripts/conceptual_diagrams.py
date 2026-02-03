@@ -1,8 +1,8 @@
 import numpy as np
-from mpl_toolkits.mplot3d.proj3d import transform
 from scipy.stats import norm, beta
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
+from project_base import unbacked_dir
 
 def plot_geological_hypothese():
     fig, ax = plt.subplots(1, 1, figsize=(7, 2))
@@ -65,7 +65,8 @@ def plot_geological_hypothese():
 
     ax.fill_between(ax.get_xlim(), ax.get_ylim()[0], ax.get_ylim()[1], color='white', alpha=1, zorder=-1)
     fig.tight_layout()
-    fig.savefig("/home/superuser/objective_3/figures/geological_hypotheses.png", dpi=600, transparent=True)
+    savedir = unbacked_dir.joinpath('figures')
+    fig.savefig(savedir.joinpath("geological_hypotheses.png"), dpi=600, transparent=True)
 
 def plot_discharge_typologies():
     fig, ax = plt.subplots(1, 1, figsize=(7, 2))

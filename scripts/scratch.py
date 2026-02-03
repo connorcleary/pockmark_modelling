@@ -10,5 +10,6 @@ import utils
 # plots.plot_changes_and_examples('first', names)
 
 #plots.plot_salinity_at_pockmarks('1average')
-utils.calc_pockmark_and_model_areas(buffer=50)
-# main_scenarios.new_conduits_and_patches_steady()
+# utils.calc_pockmark_and_model_areas(buffer=50)
+# main_scenarios.new_conduits_and_patches_steady()'
+plots.plot_conduit_and_patches_locations()

@@ -25,9 +25,9 @@ from matplotlib.colors import LinearSegmentedColormap
 import utils
 import pandas as pd
 from matplotlib.lines import Line2D
-from project_base import project_dir, unbacked_dir
+from project_base import project_dir, unbacked_dir, data_dir
 
-def plot_unstructured_vectors(ax, cross_section, qx, qy, qz, section, hstride, vstride, zone_array, reverse=False):
+def plot_unstructured_vectors(ax, cross_section, qx, qy, qz, section, hstride, vstride, zone_array, reverse=False, base_of_silt=False):
     # order x_centers
     plot_elements = []
     assert len(np.unique(cross_section.mg.ncpl)) == 1
@@ -38,9 +38,17 @@ def plot_unstructured_vectors(ax, cross_section, qx, qy, qz, section, hstride, v
     layer_ids = layer_ids[layer_ids//cross_section.mg.ncpl[0]%vstride==0]
     plot_ids = layer_ids[::hstride]
 
+    length_distal = np.cbrt(qz[pd] ** 2 + qy[pd] ** 2 + qx[pd] ** 2)
+    max_distal = np.max(length_distal)
+
     qz = qz[plot_ids]
     qx = qx[plot_ids]
     qy = qy[plot_ids]
+
+
+
+
+
 
     # get list of distances along
     distances = []
@@ -67,8 +75,35 @@ def plot_unstructured_vectors(ax, cross_section, qx, qy, qz, section, hstride, v
         xcenters = ax.get_xlim()[1] - xcenters
         qh = -np.array(qh)
 
-    ax.quiver(xcenters, ycenters, qh, qz, angles='xy', pivot='tail', color='white', alpha=1)
+    Qu = ax.quiver(xcenters, ycenters, qh, qz, angles='xy', pivot='tail', color='white', alpha=1, scale=max_distal/15)
+
+    if base_of_silt:
+        ids = np.array(list(cross_section.polygons.keys()))
+        layer_ids = np.intersect1d(pd, ids)
+        # sort layer_ids
+        layer_ids = np.sort(layer_ids)
+        repeated_ids = layer_ids % cross_section.mg.ncpl[0]
+        base_ids = []
+        for i in np.unique(repeated_ids):
+            temp_ids = layer_ids[repeated_ids == i]
+            base_ids.append(temp_ids[-1])
+
+        base_is = [np.argwhere(ids == id)[0][0] for id in base_ids]
+        xcenters = np.array(cross_section.xcenters)[base_is]
+        ycenters = np.mean(np.array(cross_section.elev).T[base_ids], axis=1)
+
+        if reverse:
+            xcenters = ax.get_xlim()[1] - xcenters
+
+        # order by coordinates
+        sorted_indices = np.argsort(xcenters)
+        xcenters = xcenters[sorted_indices]
+        ycenters = ycenters[sorted_indices]
+        # plot as light grey dotted line
+        ax.plot(xcenters, ycenters, ls=':', color='orange', zorder=15, lw=1)
+
     print("finished pockmark")
+    return max_distal, Qu
 
 
 def plot_geology(ls=None, savepath=None, unstructured=False):
@@ -210,7 +245,9 @@ def plot_boundary_conditions(test_boundaries=False):
 
         mapview = flopy.plot.PlotMapView(ax=ax_plan, modelgrid=grid, layer=4)
         linecollection = mapview.plot_grid(lw=0.05)
-        cross_section = gpd.read_file('/home/connor/PycharmProjects/pockmarks/data/cross_section.shp')
+
+
+        cross_section = gpd.read_file(data_dir.joinpath('cross_section.shp'))
         coords = cross_section['geometry'][0].coords.xy
         ax_plan.plot(coords[0], coords[1], ls="--", color='teal')
 
@@ -304,7 +341,18 @@ def plot_boundary_conditions(test_boundaries=False):
 
         # ax_p_xsect.set_box_aspect(ax_p_plan.get_box_aspect())
         # f.set_constrained_layout(True)
-        plt.savefig(f"/home/connor/PycharmProjects/pockmarks/figures/{leapfrog_name}_boundary_conditions.png", dpi=600)
+        import matplotlib.ticker as ticker
+        formatter = ticker.ScalarFormatter(useOffset=True)
+        formatter.set_scientific(True)
+        formatter.set_useOffset(1757000)
+        ax_plan.xaxis.set_major_formatter(formatter)
+        formattery = ticker.ScalarFormatter(useOffset=True)
+        formattery.set_scientific(True)
+        formattery.set_useOffset(5431000)
+        ax_plan.yaxis.set_major_formatter(formattery)
+
+        savedir = unbacked_dir.joinpath('figures')
+        plt.savefig(savedir.joinpath(f"{leapfrog_name}_boundary_conditions.png"), dpi=600)
 
 def plot_aquitard_thickness(modelgrid=False):
 
@@ -383,6 +431,17 @@ def plot_aquitard_thickness(modelgrid=False):
         norm = mpl.colors.Normalize(vmin=thickness.statistics(1).min, vmax=thickness.statistics(1).max)
         mappable = plt.cm.ScalarMappable(cmap='gist_earth', norm=norm)
         plt.colorbar(mappable, ax=ax, label="Petone Marine Distal (silt) thickness [m]", extend='both', alpha=0.7)
+
+        import matplotlib.ticker as ticker
+        formatter = ticker.ScalarFormatter(useOffset=True)
+        formatter.set_scientific(True)
+        formatter.set_useOffset(1757000)
+        ax.xaxis.set_major_formatter(formatter)
+        formattery = ticker.ScalarFormatter(useOffset=True)
+        formattery.set_scientific(True)
+        formattery.set_useOffset(5431000)
+        ax.yaxis.set_major_formatter(formattery)
+
         savedir = unbacked_dir.joinpath('figures')
         f.savefig(savedir.joinpath("aquitard_thickness_map.png"), dpi=600)
 
@@ -787,6 +846,17 @@ def plot_salinity_at_pockmarks(name, ylim=None):
     ax_map.set_ylim(extent[1], extent[3])
     ax_map.set_xlabel('Nztm x [m]')
     ax_map.set_ylabel('Nztm y [m]')
+
+    import matplotlib.ticker as ticker
+    formatter = ticker.ScalarFormatter(useOffset=True)
+    formatter.set_scientific(True)
+    formatter.set_useOffset(1757000)
+    ax_map.xaxis.set_major_formatter(formatter)
+    formattery = ticker.ScalarFormatter(useOffset=True)
+    formattery.set_scientific(True)
+    formattery.set_useOffset(5431000)
+    ax_map.yaxis.set_major_formatter(formattery)
+
     # linecollection = mapview.plot_grid(lw=0.05)
     pockmarks.to_crs('EPSG:2193')
     pockmarks.plot(ax=ax_map, edgecolors='black', color=colors, zorder=12, alpha=1, lw=0.75)
@@ -886,7 +956,7 @@ def plot_salinity_at_pockmarks(name, ylim=None):
             reverse=True
         else:
             reverse = False
-        plot_unstructured_vectors(ax_section, pockmark_section, data['qx'], data['qy'], data['qz'], section,4, 4, zone_array, reverse=reverse)
+        max_distal, Qu = plot_unstructured_vectors(ax_section, pockmark_section, data['qx'], data['qy'], data['qz'], section,4, 4, zone_array, reverse=reverse, base_of_silt=True)
 
         ax_plan.set_ylabel('Nztm y [m]')
         ax_section.set_ylabel('Nzvd z [m]')
@@ -917,6 +987,16 @@ def plot_salinity_at_pockmarks(name, ylim=None):
         ax_section.text(0.975, 0.01, f"{pockmarks_data.iloc[i]['concentration']:.1f} PSU",
                         fontsize=6, transform=ax_section.transAxes, color='white', ha='right', va='bottom')
 
+
+    # add legend below ax section
+    # with grey : line for base of silt
+    # import line2d
+    from matplotlib.lines import Line2D
+    legend_elements = [Line2D([0], [0], color='orange', lw=1, label='Base of silt layer', ls=':')]
+    ax_section.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.4), fontsize=6)
+    # also add matplotlib quiver handle for vector scale using and transform to ax_section
+    ax_section.quiverkey(Qu, X=0.5, Y=-0.75, U=5e-5, label=f'{5e-5:.1g} m/day', labelpos='S', coordinates='axes', color='black')
+    ax_section.quiverkey(Qu, X=0.5, Y=-1, U=1e-5, label=f'{1e-5:.1g} m/day', labelpos='S', coordinates='axes', color='black')
 
     norm = mpl.colors.Normalize(vmin=0, vmax=35)
     mappable = plt.cm.ScalarMappable(cmap='viridis', norm=norm)
@@ -1394,7 +1474,20 @@ def plot_conduit_and_patches_locations():
     h, l = ax.get_legend_handles_labels()
     h.append(patch)
     ax.legend(handles=h, fontsize=6, loc='upper left')
-    plt.savefig(f"/home/connor/PycharmProjects/pockmarks/figures/conduit_and_patches_locations.png", dpi=600)
+
+    import matplotlib.ticker as ticker
+    formatter = ticker.ScalarFormatter(useOffset=True)
+    formatter.set_scientific(True)
+    formatter.set_useOffset(1757000)
+    ax.xaxis.set_major_formatter(formatter)
+    formattery = ticker.ScalarFormatter(useOffset=True)
+    formattery.set_scientific(True)
+    formattery.set_useOffset(5431000)
+    ax.yaxis.set_major_formatter(formattery)
+
+    savedir = unbacked_dir.joinpath('figures')
+
+    plt.savefig(savedir.joinpath("conduit_and_patches_locations.png"), dpi=600)
 
 def plot_multi_model_comparison():
     f, axs = plt.subplots(1, 2, figsize=(7, 3.5))
@@ -1443,13 +1536,14 @@ if __name__=="__main__":
     # examples  = ((0, 5), (1, 5), (2, 5))
     # plot_changes_and_examples("base", names=names, examples=examples, version=1)
     # plot_examples_alternative_hypothesis()
-    plot_aquitard_thickness()
+    # plot_aquitard_thickness()
     # plot_alternate_hypotheses_pockmarks_and_model_vs_observed(['1average', 'hk1ave_new', 'c1ave_new'])
     # plot_alternate_hypotheses_pockmarks_and_model_vs_observed(['1average'], 1)
     # plot_alternative_hypotheses_changes(pockmark_number=5, dropping_names=False)
     # plot_conduit_and_patches_locations()
    # plot_multi_model_comparison()
     # plot_longer_swi()
+    plot_conduit_and_patches_locations()
     # plot_boundary_conditions()
 
 

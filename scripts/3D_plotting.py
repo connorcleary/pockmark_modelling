@@ -8,8 +8,10 @@ import gemgis as gg
 import os
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
+from project_base import unbacked_dir, data_dir
 
 def get_vtk_from_leapfrog(name):
+    leapfrog_dir= None
     if os.path.exists(f"/home/superuser/objective_3/data/leapfrog/{name}.vtk"):
         return pv.read(f"/home/superuser/objective_3/data/leapfrog/{name}.vtk")
     tempDict = gg.raster.read_msh(f"/home/superuser/objective_3/data/leapfrog/{name}.msh")
@@ -17,7 +19,7 @@ def get_vtk_from_leapfrog(name):
     tempMesh.save(f"/home/superuser/objective_3/data/leapfrog/{name}.vtk")
     return tempMesh
 
-def plot_geology(from_leapfrog_mesh=False):
+def plot_geology(from_leapfrog_mesh=False, only_plot_axis=True):
 
     colors = ["goldenrod", "cornflowerblue", "slategray", "mediumseagreen"]
     names = ["Upper Waiwhetu", "Petone Marine Lower", "Petone Marine Distal", "Petone Marine Upper"]
@@ -43,39 +45,44 @@ def plot_geology(from_leapfrog_mesh=False):
         grid.plot(scalars="zones", cmap=my_colormap, show_edges=False, show_grid=False, notebook=False, opacity=0.5)
 
     else:
-        p = pv.Plotter(notebook=False, window_size=[800,600], off_screen=True)
 
-        for name, color in zip(names, colors):
-            mesh = get_vtk_from_leapfrog(name)
-            mesh.points[:, 2] = mesh.points[:, 2] * 10
-            p.add_mesh(mesh, color=color)
-        #
+        savedir = unbacked_dir.joinpath('figures')
 
-        labels = dict(ztitle='Depth [m]', xtitle='Nztm x [m]', ytitle='Nztm y [m]',
-                      bold=False, use_3d_text=False, font_size=16, n_xlabels=3, n_ylabels=3,
-                      show_xlabels=True, show_ylabels=True, show_zlabels=True)
-        # p.show_grid(color=None, **labels)
-        p.set_background(color='white')
-        # p.set_scale(zscale=15)
-        #p.add_axes(**labels)
-        p.enable_parallel_projection()
-        p.camera_position = 'yz'
-        p.camera.azimuth = -45
-        p.camera.elevation = 35
+        if not only_plot_axis:
+            p = pv.Plotter(notebook=False, window_size=[800,600], off_screen=True)
 
-        light = pv.Light(intensity=0.5)
-        light.set_direction_angle(35, -45)
-        p.add_light(light)
-        # p.show()
-        p.screenshot(f"/home/superuser/objective_3/figures/geology.png", transparent_background=True, scale=3)
+            for name, color in zip(names, colors):
+                mesh = get_vtk_from_leapfrog(name)
+                mesh.points[:, 2] = mesh.points[:, 2] * 10
+                p.add_mesh(mesh, color=color)
+            #
 
-        plt.rcParams.update({'font.size': 8})
+            labels = dict(ztitle='Depth [m]', xtitle='Nztm x [m]', ytitle='Nztm y [m]',
+                          bold=False, use_3d_text=False, font_size=16, n_xlabels=3, n_ylabels=3,
+                          show_xlabels=True, show_ylabels=True, show_zlabels=True)
+            # p.show_grid(color=None, **labels)
+            p.set_background(color='white')
+            # p.set_scale(zscale=15)
+            #p.add_axes(**labels)
+            p.enable_parallel_projection()
+            p.camera_position = 'yz'
+            p.camera.azimuth = -45
+            p.camera.elevation = 35
 
-        f,ax = plt.subplots(figsize=(3,1))
-        ax.axis('off')
-        legend_elements = [Patch(facecolor=colors[3-i], edgecolor=colors[3-i], label=names_with_type[3-i]) for i in range(4)]
-        ax.legend(handles=legend_elements, loc='center', fontsize=8, markerfirst=False, framealpha=1)
-        plt.savefig(f"/home/superuser/objective_3/figures/geology_legend.png", dpi=600, transparent=True)
+            light = pv.Light(intensity=0.5)
+            light.set_direction_angle(35, -45)
+            p.add_light(light)
+            # p.show()
+
+            p.screenshot(savedir.joinpath("geology.png"), transparent_background=True, scale=3)
+
+            plt.rcParams.update({'font.size': 8})
+
+            f,ax = plt.subplots(figsize=(3,1))
+            ax.axis('off')
+            legend_elements = [Patch(facecolor=colors[3-i], edgecolor=colors[3-i], label=names_with_type[3-i]) for i in range(4)]
+            ax.legend(handles=legend_elements, loc='center', fontsize=8, markerfirst=False, framealpha=1)
+            plt.savefig(savedir.joinpath("geology_legend.png"), dpi=600, transparent=True)
 
         f = plt.figure(figsize=(8,6))
         ax = f.add_subplot(111, projection='3d')
@@ -86,6 +93,16 @@ def plot_geology(from_leapfrog_mesh=False):
         ax.set_xlim(1757300, 1759300)
         ax.set_ylim(5431350, 5433900)
         ax.set_proj_type('ortho')
+        import matplotlib.ticker as ticker
+        formatter = ticker.ScalarFormatter(useOffset=True)
+        formatter.set_scientific(True)
+        formatter.set_useOffset(1757000)
+        ax.xaxis.set_major_formatter(formatter)
+        formattery = ticker.ScalarFormatter(useOffset=True)
+        formattery.set_scientific(True)
+        formattery.set_useOffset(5431000)
+        ax.yaxis.set_major_formatter(formattery)
+
         ax.set_box_aspect((np.ptp([1757300, 1759300]), np.ptp([5431350, 5433900]), 10*np.ptp([-50, 5])))
         ax.set_xlabel('Nztm x [m]', labelpad=10)
         ax.set_ylabel('Nztm y [m]', labelpad=10)
@@ -95,8 +112,7 @@ def plot_geology(from_leapfrog_mesh=False):
         ax.yaxis.set_pane_color((1.0, 1.0, 1.0, 1.0))
         ax.zaxis.set_pane_color((1.0, 1.0, 1.0, 1.0))
 
-
-        f.savefig(f"/home/superuser/objective_3/figures/geology_grid.png", dpi=600, transparent=True)
+        f.savefig(savedir.joinpath("geology_grid.png"), dpi=600, transparent=True)
 
 if __name__ == '__main__':
     plot_geology(from_leapfrog_mesh=True)
