@@ -800,7 +800,7 @@ def plot_pockmark(name, i, grid, ax_plan=None, ax_section=None, label_sections=F
                         fontsize=6, transform=ax_plan.transAxes, color='black', ha='right', va='bottom')
 
 
-def plot_salinity_at_pockmarks(name, ylim=None):
+def plot_salinity_at_pockmarks(name, ylim=None, head=False):
     # load pockmarks
     pockmarks = gpd.read_file('/home/connor/PycharmProjects/pockmarks/data/pockmarks6_new.shp', crs='EPSG:2193')
     sections = gpd.read_file('/home/connor/PycharmProjects/pockmarks/data/pockmark_sections.shp')
@@ -809,6 +809,7 @@ def plot_salinity_at_pockmarks(name, ylim=None):
     # load concentration
     data = utils.get_final_results(name)
     conc = data['conc']
+    head = data['head'] if head else None
     # setup gridspec
     f = plt.figure(figsize=(7.5, 8.5))
 
@@ -886,7 +887,11 @@ def plot_salinity_at_pockmarks(name, ylim=None):
 
         pockmark_plan = flopy.plot.PlotMapView(ax=ax_plan, modelgrid=grid, layer=1, extent=square_extent)
         # pockmark_plan.plot_grid()
-        pockmark_plan.plot_array(conc, vmin=0, vmax=35)
+        if head is not None:
+            pockmark_plan.plot_array(head, vmin=np.max(head), vmax=np.min(head), cmap='plasma')
+        else:
+            pockmark_plan.plot_array(conc, vmin=0, vmax=35)
+
         coords = section.coords.xy
 
         temp_line = [(i, j) for i, j in zip(coords[0], coords[1])]
@@ -950,8 +955,11 @@ def plot_salinity_at_pockmarks(name, ylim=None):
 
         tstart = ax_plan.text(anchor_end[0], anchor_end[1], f"{i+1}'", fontsize=6, ha='right', va='bottom',
                               rotation=angle_end, rotation_mode='anchor')
+        if head is not None:
+            pockmark_section.plot_array(head, vmin=np.max(head), vmax=np.min(head), cmap='plasma')
+        else:
+            pockmark_section.plot_array(conc, vmin=0, vmax=35)
 
-        pockmark_section.plot_array(conc, vmin=0, vmax=35)
         if i in [3,4]:
             reverse=True
         else:
@@ -998,9 +1006,16 @@ def plot_salinity_at_pockmarks(name, ylim=None):
     ax_section.quiverkey(Qu, X=0.5, Y=-0.75, U=5e-5, label=f'{5e-5:.1g} m/day', labelpos='S', coordinates='axes', color='black')
     ax_section.quiverkey(Qu, X=0.5, Y=-1, U=1e-5, label=f'{1e-5:.1g} m/day', labelpos='S', coordinates='axes', color='black')
 
-    norm = mpl.colors.Normalize(vmin=0, vmax=35)
-    mappable = plt.cm.ScalarMappable(cmap='viridis', norm=norm)
-    cb = plt.colorbar(mappable, cax=ax_cb, label='Salinity [PSU]', orientation='horizontal', fraction=1)
+    if head is not None:
+        norm = mpl.colors.Normalize(vmin=np.nanmin(head), vmax=np.nanmax(head))
+    else:
+        norm = mpl.colors.Normalize(vmin=0, vmax=35)
+    if head is not None:
+        mappable = plt.cm.ScalarMappable(cmap='plasma', norm=norm)
+        cb = plt.colorbar(mappable, cax=ax_cb, label='Head [m]', orientation='horizontal', fraction=1)
+    else:
+        mappable = plt.cm.ScalarMappable(cmap='viridis', norm=norm)
+        cb = plt.colorbar(mappable, cax=ax_cb, label='Salinity [PSU]', orientation='horizontal', fraction=1)
 
     non_pockmark_data = utils.get_total_seafloor_discharge(name)
     ax_map.text(0.025, 0.055, rf"{non_pockmark_data['discharge']:.2f} m$^3$/day",
@@ -1529,6 +1544,40 @@ def plot_longer_swi(models=None, names=None):
     plt.tight_layout()
     plt.savefig(f"/home/connor/PycharmProjects/pockmarks/figures/longer_swi.png", dpi=600)
 
+def plot_tidal_effects_on_salinity_and_discharge_at_measumement_points(scenario_name='tidal'):
+
+    f, axs = plt.subplots(1, 2, figsize=(7, 3.5))
+    plt.rcParams.update({'font.size': 8})
+
+    # get salinity and discharge time series at measurement points
+    data = utils.get_salinity_and_discharge_at_measurment_points_time_series(scenario_name)
+    conc_df = data['conc']
+    discharge_df = data['discharge']
+    # plot salinity time series
+    for measurement in ['mc21', 'mc22', 'mc23']:
+        axs[0].plot(conc_df.columns, conc_df.loc[measurement], label=measurement)
+    axs[0].set_xlabel('Time [days]')
+    axs[0].set_ylabel('Salinity [PSU]')
+    # set log s
+    axs[0].legend(fontsize=6)
+
+    # plot discharge time series
+    for measurement in ['sv1', 'sv6']:
+        axs[1].plot(discharge_df.columns, discharge_df.loc[measurement], label=measurement)
+
+    axs[1].set_xlabel('Time [days]')
+    axs[1].set_ylabel('Discharge [m$^3$/day]')
+    axs[1].set_yscale('log')
+    # update y limits to better show tidal variations
+    axs[1].legend(fontsize=6)
+    plt.tight_layout()
+
+    savepath = unbacked_dir.joinpath('figures', f'tidal_effects_on_salinity_and_discharge.png')
+    plt.savefig(savepath, dpi=600)
+    plt.show()
+
+
+
 
 
 if __name__=="__main__":
@@ -1543,7 +1592,7 @@ if __name__=="__main__":
     # plot_conduit_and_patches_locations()
    # plot_multi_model_comparison()
     # plot_longer_swi()
-    plot_conduit_and_patches_locations()
+    # plot_conduit_and_patches_locations()
     # plot_boundary_conditions()
-
+    plot_tidal_effects_on_salinity_and_discharge_at_measumement_points("tidal")
 

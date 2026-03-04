@@ -172,6 +172,52 @@ def get_pockmark_discharge_and_recharge(name):
         store = pd.HDFStore(unbacked_dir.joinpath('outputs', name, 'pockmarks_discharge_recharge_over_time_step.h5'), mode='r')
         return {pockmark: pd.read_hdf(unbacked_dir.joinpath('outputs', name, 'pockmarks_discharge_recharge_over_time_step.h5'), pockmark) for pockmark in pockmarks}
 
+def get_salinity_and_discharge_at_measurment_points_time_series(name):
+
+    if not os.path.exists(unbacked_dir.joinpath('outputs', name, 'measurement_points_time_series.h5')):
+        sim = flopy.mf6.MFSimulation.load(
+            sim_ws=unbacked_dir.joinpath('models', name),
+        )
+        gwt = sim.get_model("trans")
+        times = gwt.output.concentration().get_times()
+        measurement_cells = discretization.get_measurement_cells()
+        conc_df = pd.DataFrame(index=measurement_cells.files[:int(len(measurement_cells) / 2)],
+                                 columns=times)
+        discharge_df = pd.DataFrame(index=measurement_cells.files[:int(len(measurement_cells) / 2)],
+                                      columns=times)
+
+        for time in times:
+            conc = gwt.output.concentration().get_data(totim=time)
+            gwf = sim.get_model(name)
+            bud = gwf.output.budget()
+
+            qx, qy, qz = flopy.utils.postprocessing.get_specific_discharge(
+                bud.get_data(text="DATA-SPDIS", totim=time)[0],
+                gwf,
+            )
+
+            # only for center
+            for center in measurement_cells.files[:int(len(measurement_cells) / 2)]:
+                conc_df.loc[center, time] = conc[0][0][measurement_cells[center][2].astype(int)]
+                discharge_df.loc[center, time] = qz[measurement_cells[center][0].astype(int)]
+
+        # make dir
+        unbacked_dir.joinpath('outputs', name).mkdir(parents=True, exist_ok=True)
+        conc_df.to_hdf(unbacked_dir.joinpath('outputs', name, 'measurement_points_time_series.h5'), key='conc', mode='w')
+        discharge_df.to_hdf(unbacked_dir.joinpath('outputs', name, 'measurement_points_time_series.h5'), key='discharge', mode='a')
+
+        return {
+            "conc": conc_df,
+            "discharge": discharge_df
+        }
+    else:
+        conc_df = pd.read_hdf(unbacked_dir.joinpath('outputs', name, 'measurement_points_time_series.h5'), key='conc')
+        discharge_df = pd.read_hdf(unbacked_dir.joinpath('outputs', name, 'measurement_points_time_series.h5'), key='discharge')
+        return {
+            "conc": conc_df,
+            "discharge": discharge_df
+        }
+
 def get_total_seafloor_discharge(name):
     if not os.path.exists(unbacked_dir.joinpath('outputs', name, 'total_seafloor_discharge.npz')):
         data = get_final_results(name)

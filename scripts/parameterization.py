@@ -69,7 +69,23 @@ def get_boundary_values(time="current", scenario='summer', step=None):
             'onshore': onshore,
             'offshore': onshore-gradient*length,
         }
+    elif scenario=="tidal":
+        gradient = (bore_values[time]['mcew_median'] - bore_values[time]['somes_median']) / distance
+        onshore = bore_values[time]['mcew_median'] #
+        assert step is not None
+        # start at base value of 0.14 then at tidal range of 1.6 m
+        seafloor = -0.14 + 0.8*np.sin(2*np.pi/12*(step%12))
+        # onshore should have tidal range of 0.7*0.8 = 0.56 m, with 1/24/2 time lag
+        # offshore should have tidal range of 0.87*0.8 = 0.696 m, with 0 time lag
+        offshore_base = onshore-gradient*length
+        offshore = offshore_base + 0.696*np.sin(2*np.pi/12*(step%12))
+        onshore = onshore + 0.56*np.sin(2*np.pi/12*((step-1/24*2)%12))
 
+        return {
+            'seafloor': seafloor,
+            'onshore': onshore,
+            'offshore': offshore,
+        }
 
     return {
         'seafloor': seafloor,
@@ -143,6 +159,14 @@ def  get_tdis_params(scenario='steady'):
             'nper': 1,
             'frequency': 365,
             }
+    if scenario=="tidal":
+        return {
+            'perlen': 1/24, # ~ 10 tidal cycles
+            'nstp': 10, # 12 time steps per tidal cycle
+            'tsmult': 1,
+            'nper': 12*10,
+            'frequency': 10,
+        }
 
 def get_params_by_zone(case, param, hypothesis='null', patch_multiplier=None, conduit_k=None):
     zones = discretization.get_zone_array()

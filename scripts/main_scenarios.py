@@ -28,7 +28,7 @@ def new_grid_scenarios():
 
     names = ['1average'] # '3slr2', '4minimum', '5slr1_min', '6slr2_min', '7swi', '8slr1_swi', '9slr2_swi']
     for name in names:
-        plots.plot_salinity_at_pockmarks(name)
+        plots.plot_salinity_at_pockmarks(name, head=True)
 
 def new_grid_high_k_scenarios():
     # modelling.create_run_model("hk1average", case='base', time='current',
@@ -131,6 +131,10 @@ def dropping_head_runs():
                                init='c1ave_new', tscenario='dropping_head', hypothesis="conduits")
     # plots.plot_salinity_at_pockmarks("dropping")
 
+def tidal_runs():
+    modelling.create_run_model("tidal_all_b", case='base', time='current', scenario='tidal', tscenario='tidal', init='1average')
+
+
 def patches_higher_k():
     modelling.create_run_model("hhk_average", case='base', time='current',
                                scenario='summer_average', init='fresh', tscenario='steady', hypothesis="high_pockmark_k", patch_multiplier=20)
@@ -182,5 +186,6 @@ if __name__ == "__main__":
     # patches_higher_k()
     # conduits_higher_k()
     # low_long_swi_scenarios()
-    new_grid_scenarios()
     # new_grid_scenarios()
+    # new_grid_scenarios()
+    tidal_runs()
