@@ -132,7 +132,11 @@ def dropping_head_runs():
     # plots.plot_salinity_at_pockmarks("dropping")
 
 def tidal_runs():
-    modelling.create_run_model("tidal_all_b", case='base', time='current', scenario='tidal', tscenario='tidal', init='1average')
+    # modelling.create_run_model("tidal_all_b", case='base', time='current', scenario='tidal', tscenario='tidal', init='1average')
+    # modelling.create_run_model("tidal_all_c", case='base', time='current',
+    #                           scenario='tidal', tscenario='tidal', init='c1ave_new', hypothesis="conduits")
+    plots.plot_tidal_effects_on_salinity_and_discharge_at_measumement_points("tidal_all_b")
+    plots.plot_tidal_effects_on_salinity_and_discharge_at_measumement_points("tidal_all_c")
 
 
 def patches_higher_k():
@@ -168,11 +172,57 @@ def conduits_higher_k():
     for name in names:
         plots.plot_salinity_at_pockmarks(name)
 
+def base_scenario_dispersion():
+    # modelling.create_run_model("average_dsp", case='dispersion', time='current',
+    #                            scenario='summer_average', init='fresh', tscenario='steady')
+    # DO FOR high k and conduits too?
+    # modelling.create_run_model("hk_average_dsp", case='dispersion', time='current',
+    #                            scenario='summer_average', init='fresh', tscenario='steady', hypothesis="high_pockmark_k")
+    # modelling.create_run_model("c_average_dsp", case='dispersion', time='current',
+    #                            scenario='summer_average', init='fresh', tscenario='steady', hypothesis="conduits", conduit_k=1)
+    # modelling.create_run_model("c_average_dsp_b", case='dispersion', time='current',
+    #                            scenario='summer_average', init='fresh', tscenario='steady', hypothesis="conduits", conduit_k=10)
+
+    plots.compare_salinity_at_measurement_points_dispersion()
+
+
+def main_scenarios_revision_1():
+
+    # present day
+    modelling.create_run_model("1ave_r1", case='base', time='current',
+                               scenario='summer_average', init='fresh', tscenario='steady')
+    modelling.create_run_model("hk1ave_r1", case='base', time='current',
+                                 scenario='summer_average', init='fresh', tscenario='steady', hypothesis="high_pockmark_k")
+    modelling.create_run_model("c1ave_r1", case='base', time='current',
+                               scenario='summer_average', init='fresh', tscenario='steady', hypothesis="conduits", conduit_k=1)
+
+    # slr
+    modelling.create_run_model("6slr2_r1", case='base', time='SLR2',
+                               scenario='summer_average', init="1ave_r1", tscenario='slr2')
+    modelling.create_run_model("hk6slr2_r1", case='base', time='SLR2',
+                               scenario='summer_average', init="hk1ave_r1", tscenario='slr2',
+                               hypothesis="high_pockmark_k")
+    modelling.create_run_model("c6slr2_r1", case='base', time='SLR2',
+                               scenario='summer_average', init="c1ave_r1", tscenario='slr2', hypothesis="conduits",
+                               conduit_k=1)
+
+    # swi
+    modelling.create_run_model("7swi_r1", case='base', time='current',
+                                 scenario='swi_b', init='1ave_r1', tscenario='transient')
+    modelling.create_run_model("hk7swi_r1", case='base', time='current',
+                               scenario='swi_b', init='hk1ave_r1', tscenario='transient', hypothesis="high_pockmark_k")
+    modelling.create_run_model("c7swi_r1", case='base', time='current',
+                               scenario='swi_b', init='c1ave_r1', tscenario='transient', hypothesis="conduits", conduit_k=1)
+
+
+
+    names = ['1ave_r1', 'hk1ave_r1', 'c1ave_r1', '6slr2_r1', 'hk6slr2_r1', 'c6slr2_r1', '7swi_r1', 'hk7swi_r1', 'c7swi_r1']
+    for name in names:
+        plots.plot_salinity_at_pockmarks(name)
+
 def results():
-    # names = ['t1summer', 't2slr', 't3low', 't4low_slr', 't5swi', 't6swi_slr']
-    # names = ['c1summer', 'c2slr', 'c3low', 'c4low_slr', 'c5swi', 'c6swi_slr']
-    # latex_tables.pockmark_discharges_by_scenario("first_scenarios", names)
-    # plots.plot_changes_and_examples('conduits', names)
+
+
     pass
 
 
@@ -188,4 +238,7 @@ if __name__ == "__main__":
     # low_long_swi_scenarios()
     # new_grid_scenarios()
     # new_grid_scenarios()
-    tidal_runs()
+    # tidal_runs()
+    # tidal_runs()
+    #  base_scenario_dispersion()
+    main_scenarios_revision_1()

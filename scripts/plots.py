@@ -1465,6 +1465,8 @@ def plot_conduit_and_patches_locations():
                            delimiter=',', skip_header=1)[:,1:]
     arbitrary = gpd.read_file('/home/connor/PycharmProjects/pockmarks/data/abritrary_pockmark_locations.shp', crs='EPSG:2193')
     arbitrary.to_crs('EPSG:2193')
+    # drop first point from abritray
+    arbitrary = arbitrary.iloc[1:]
     arbitrary.plot(ax=ax, edgecolors='black', color="chocolate", zorder=12, alpha=1, lw=0.75, markersize=15, label="Conduits")
 
     transformer = Transformer.from_crs("EPSG:4326", "EPSG:2193")
@@ -1567,15 +1569,38 @@ def plot_tidal_effects_on_salinity_and_discharge_at_measumement_points(scenario_
 
     axs[1].set_xlabel('Time [days]')
     axs[1].set_ylabel('Discharge [m$^3$/day]')
-    axs[1].set_yscale('log')
+    # axs[1].set_yscale('log')
     # update y limits to better show tidal variations
+    # add a and b labels
+    axs[0].text(0.975, 1.025, f"(a)", fontsize=8, transform=axs[0].transAxes, ha='right', va='bottom')
+    axs[1].text(0.975, 1.025, f"(b)", fontsize=8, transform=axs[1].transAxes, ha='right', va='bottom')
+
     axs[1].legend(fontsize=6)
     plt.tight_layout()
 
-    savepath = unbacked_dir.joinpath('figures', f'tidal_effects_on_salinity_and_discharge.png')
+    savepath = unbacked_dir.joinpath('figures', f'tidal_effects_on_salinity_and_discharge_{scenario_name}.png')
     plt.savefig(savepath, dpi=600)
     plt.show()
 
+def compare_salinity_at_measurement_points_dispersion():
+    f, axs = plt.subplots(3, 2, figsize=(6, 8), sharex='col')
+    plt.rcParams.update({'font.size': 8})
+    names = [['1average', 'average_dsp'], ['hk1ave_new', 'hk_average_dsp'], ['c1ave_new', 'c_average_dsp_b']]
+    labels = [r'alpha_L = 0', 'alpha_L = 10']
+    label_suffixes = ['Thin', 'Patchy', 'Conduits']
+
+
+    for i, name in enumerate(names):
+        use_labels = [label + f" ({label_suffixes[i]})" for label in labels]
+        plot_salinity_comparison(name, ax=axs[i, 0], errors_on_modelled_conduits=False, labels=use_labels, legend=True, colors=['tab:blue', 'tab:orange'])
+        plot_flux_comparison(name, ax=axs[i, 1], errors_on_modelled_conduits=False, labels=use_labels, legend=False, colors=['tab:blue', 'tab:orange'])
+        # plot (a, b) labels
+        axs[i, 0].text(0.975, 1.025, f"({chr(97+2*i)})", fontsize=8, transform=axs[i, 0].transAxes, ha='right', va='bottom')
+        axs[i, 1].text(0.975, 1.025, f"({chr(98+2*i)})", fontsize=8, transform=axs[i, 1].transAxes, ha='right', va='bottom')
+
+    plt.tight_layout()
+
+    plt.savefig(unbacked_dir.joinpath('figures', 'compare_salinity_at_measurement_points_dispersion.png'), dpi=600)
 
 
 
@@ -1589,10 +1614,10 @@ if __name__=="__main__":
     # plot_alternate_hypotheses_pockmarks_and_model_vs_observed(['1average', 'hk1ave_new', 'c1ave_new'])
     # plot_alternate_hypotheses_pockmarks_and_model_vs_observed(['1average'], 1)
     # plot_alternative_hypotheses_changes(pockmark_number=5, dropping_names=False)
-    # plot_conduit_and_patches_locations()
+    plot_conduit_and_patches_locations()
    # plot_multi_model_comparison()
     # plot_longer_swi()
     # plot_conduit_and_patches_locations()
     # plot_boundary_conditions()
-    plot_tidal_effects_on_salinity_and_discharge_at_measumement_points("tidal")
+    # plot_tidal_effects_on_salinity_and_discharge_at_measumement_points("tidal_all_b")
 

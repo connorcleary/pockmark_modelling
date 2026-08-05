@@ -641,7 +641,7 @@ def get_distal_and_lower_below_conduit_cells(non_measurement=True, all_measureme
             yvertices = [yvertices[cell] for cell in seafloor]
             shapes = gpd.read_file(project_dir.joinpath('data', 'abritrary_pockmark_locations.shp'))
             data = get_intersected_cells(shapes, xvertices, yvertices, seafloor, names=['edge_pockmark_2', 'sv4'])
-            known_cells.append(data['edge_pockmark_2'][2])
+            # known_cells.append(data['edge_pockmark_2'][2])
             known_cells.append(data['sv4'][2])
 
         cells = []

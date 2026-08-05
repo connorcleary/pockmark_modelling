@@ -28,6 +28,27 @@ def get_hydraulic_params(case='base'):
             'vksea': 1000,
             'sssea': 1,
         }
+    elif case=='dispersion':
+        return {
+            'hkpu': 0.82,
+            'vkpu': 0.006,
+            'hkpd': 0.0005,
+            'vkpd': 1.8e-5,
+            'hkpl': 1.5,
+            'vkpl': 0.0094,
+            'hkuw': 1000,
+            'vkuw': 0.1,
+            'dm_coeff': 8.64e-5,
+            'sspu': 2e-5,
+            'sspd': 3.1e-5,
+            'sspl': 5.5e-5,
+            'ssuw': 3.1e-5,
+            'alpha': 10,
+            'hksea': 1000,
+            'vksea': 1000,
+            'sssea': 1,
+        }
+
 
 def get_boundary_values(time="current", scenario='summer', step=None):
 
@@ -205,7 +226,7 @@ def get_params_by_zone(case, param, hypothesis='null', patch_multiplier=None, co
 
     elif hypothesis == "conduits":
         if conduit_k is None:
-            conduit_k = 10
+            conduit_k = 1
         distal_and_lower_below_conduits = discretization.get_distal_and_lower_below_conduit_cells()
         if param == 'hk' or param == 'vk':
             zones[distal_and_lower_below_conduits] = conduit_k
