@@ -10,7 +10,7 @@ import matplotlib.cm as cm
 import matplotlib.colors as colors
 import parameterization
 import os
-#import pyvista as pv
+# import pyvista as pv
 from flopy.export.vtk import Vtk
 import rasterio
 from rasterio.plot import show
@@ -25,9 +25,11 @@ from matplotlib.colors import LinearSegmentedColormap
 import utils
 import pandas as pd
 from matplotlib.lines import Line2D
-from project_base import project_dir, unbacked_dir, data_dir
+from project_base import project_dir, unbacked_dir, data_dir, map_data_dir
 
-def plot_unstructured_vectors(ax, cross_section, qx, qy, qz, section, hstride, vstride, zone_array, reverse=False, base_of_silt=False):
+
+def plot_unstructured_vectors(ax, cross_section, qx, qy, qz, section, hstride, vstride, zone_array, reverse=False,
+                              base_of_silt=False):
     # order x_centers
     plot_elements = []
     assert len(np.unique(cross_section.mg.ncpl)) == 1
@@ -35,7 +37,7 @@ def plot_unstructured_vectors(ax, cross_section, qx, qy, qz, section, hstride, v
     pd = np.where(zone_array == 1)
     ids = np.array(list(cross_section.polygons.keys()))
     layer_ids = np.intersect1d(pd, ids)
-    layer_ids = layer_ids[layer_ids//cross_section.mg.ncpl[0]%vstride==0]
+    layer_ids = layer_ids[layer_ids // cross_section.mg.ncpl[0] % vstride == 0]
     plot_ids = layer_ids[::hstride]
 
     length_distal = np.cbrt(qz[pd] ** 2 + qy[pd] ** 2 + qx[pd] ** 2)
@@ -44,11 +46,6 @@ def plot_unstructured_vectors(ax, cross_section, qx, qy, qz, section, hstride, v
     qz = qz[plot_ids]
     qx = qx[plot_ids]
     qy = qy[plot_ids]
-
-
-
-
-
 
     # get list of distances along
     distances = []
@@ -63,9 +60,9 @@ def plot_unstructured_vectors(ax, cross_section, qx, qy, qz, section, hstride, v
         iseg = np.argwhere(cross_section.xcenters[i] < distances)[-1]
         # project qh to the line
         center_coords = cross_section.xypts[id][0]
-        seg_end = (section.coords.xy[0][int(iseg+1)], section.coords.xy[1][int(iseg+1)])
-        seg_vector = (seg_end[0]-center_coords[0], seg_end[1]-center_coords[1])
-        qh_temp = np.dot((qx[count], qy[count]), seg_vector)/np.linalg.norm(seg_vector)
+        seg_end = (section.coords.xy[0][int(iseg + 1)], section.coords.xy[1][int(iseg + 1)])
+        seg_vector = (seg_end[0] - center_coords[0], seg_end[1] - center_coords[1])
+        qh_temp = np.dot((qx[count], qy[count]), seg_vector) / np.linalg.norm(seg_vector)
         qh.append(qh_temp)
 
     xcenters = np.array(cross_section.xcenters)[plot_is]
@@ -75,7 +72,7 @@ def plot_unstructured_vectors(ax, cross_section, qx, qy, qz, section, hstride, v
         xcenters = ax.get_xlim()[1] - xcenters
         qh = -np.array(qh)
 
-    Qu = ax.quiver(xcenters, ycenters, qh, qz, angles='xy', pivot='tail', color='white', alpha=1, scale=max_distal/15)
+    Qu = ax.quiver(xcenters, ycenters, qh, qz, angles='xy', pivot='tail', color='white', alpha=1, scale=max_distal / 15)
 
     if base_of_silt:
         ids = np.array(list(cross_section.polygons.keys()))
@@ -120,10 +117,10 @@ def plot_geology(ls=None, savepath=None, unstructured=False):
             ls = LightSource(285, -60)
         ax.set_box_aspect([4, 5, 2])
 
-        x = np.repeat(grid.xvertices[np.newaxis, :, :], grid.nlay+1, axis=0)
-        y = np.repeat(grid.yvertices[np.newaxis, :, :], grid.nlay+1, axis=0)
+        x = np.repeat(grid.xvertices[np.newaxis, :, :], grid.nlay + 1, axis=0)
+        y = np.repeat(grid.yvertices[np.newaxis, :, :], grid.nlay + 1, axis=0)
         z = grid.zverts_smooth
-        filled = zone_array>0
+        filled = zone_array > 0
         colors = np.empty_like(zone_array[:, :, :], dtype=object)
         colors[zone_array == 0] = "white"
         colors[zone_array == -1] = "white"
@@ -176,8 +173,8 @@ def plot_geo_multi_ls():
             ls = LightSource(az, el)
             plot_geology(ls, savepath=f"{fig_dir}/geology_az{az}_el{el}.png")
 
-def plot_boundary_conditions(test_boundaries=False):
 
+def plot_boundary_conditions(test_boundaries=False):
     if leapfrog_name is None:
         grid = discretization.get_grid_w_ibound()
         f = plt.figure(figsize=(7, 4))
@@ -200,18 +197,22 @@ def plot_boundary_conditions(test_boundaries=False):
         filled_offshore = boundary_arrays['offshore']
 
         filled_base = np.multiply(filled_base, ~filled_onshore)
-        ax.voxels(x, y, z, filled_onshore, facecolors=cm.viridis(0.0), edgecolors=colors.colorConverter.to_rgba(cm.viridis(0), alpha=0), alpha=0.5, lightsource=ls)
+        ax.voxels(x, y, z, filled_onshore, facecolors=cm.viridis(0.0),
+                  edgecolors=colors.colorConverter.to_rgba(cm.viridis(0), alpha=0), alpha=0.5, lightsource=ls)
 
         # plot surface boundary cells
         filled_base = np.multiply(filled_base, ~filled_surface)
-        ax.voxels(x, y, z, filled_surface, facecolors=cm.viridis(1.0), edgecolors=colors.colorConverter.to_rgba(cm.viridis(1.0), alpha=0), alpha=0.5, lightsource=ls)
+        ax.voxels(x, y, z, filled_surface, facecolors=cm.viridis(1.0),
+                  edgecolors=colors.colorConverter.to_rgba(cm.viridis(1.0), alpha=0), alpha=0.5, lightsource=ls)
 
         # plot offshore boundary cells
         filled_base = np.multiply(filled_base, ~filled_offshore)
-        ax.voxels(x, y, z, filled_offshore, facecolors=cm.viridis(0.5), edgecolors=colors.colorConverter.to_rgba(cm.viridis(0.5), alpha=0), alpha=0.5, lightsource=ls)
+        ax.voxels(x, y, z, filled_offshore, facecolors=cm.viridis(0.5),
+                  edgecolors=colors.colorConverter.to_rgba(cm.viridis(0.5), alpha=0), alpha=0.5, lightsource=ls)
 
         # plot non boundary cells
-        ax.voxels(x, y, z, filled_base, facecolors="grey", edgecolors=colors.colorConverter.to_rgba("grey", alpha=0.), alpha=0.05, lightsource=ls)
+        ax.voxels(x, y, z, filled_base, facecolors="grey", edgecolors=colors.colorConverter.to_rgba("grey", alpha=0.),
+                  alpha=0.05, lightsource=ls)
         #
         ax_leg = f.add_subplot(gs[1])
         ax_leg.set_axis_off()
@@ -219,7 +220,6 @@ def plot_boundary_conditions(test_boundaries=False):
         on = mpl.patches.Patch(color=cm.viridis(0.0), alpha=0.5, label='Onshore CHD')
         off = mpl.patches.Patch(color=cm.viridis(0.5), alpha=0.5, label='Offshore CHD')
         surf = mpl.patches.Patch(color=cm.viridis(1.0), alpha=0.5, label='Seafloor CHD and CNC')
-
 
         ax_leg.legend(handles=[on, off, surf], loc='center left', fontsize=7)
 
@@ -232,10 +232,10 @@ def plot_boundary_conditions(test_boundaries=False):
         f = plt.figure(figsize=(8, 6))
         plt.rcParams.update({'font.size': 8})
         gs = f.add_gridspec(2, 1, height_ratios=[0.5, 0.4], hspace=0.3)
-        gs_top = gridspec.GridSpecFromSubplotSpec(1, 2, subplot_spec=gs[0], width_ratios = [0.5, 1], wspace=0.25)
+        gs_top = gridspec.GridSpecFromSubplotSpec(1, 2, subplot_spec=gs[0], width_ratios=[0.5, 1], wspace=0.25)
         ax_plan = f.add_subplot(gs_top[0])
         ax_xsect = f.add_subplot(gs_top[1])
-        gs_bot = gridspec.GridSpecFromSubplotSpec(1, 2, subplot_spec=gs[1], width_ratios = [1, 0.8], wspace=0.25)
+        gs_bot = gridspec.GridSpecFromSubplotSpec(1, 2, subplot_spec=gs[1], width_ratios=[1, 0.8], wspace=0.25)
         ax_p_plan = f.add_subplot(gs_bot[0])
         ax_p_xsect = f.add_subplot(gs_bot[1])
 
@@ -246,7 +246,6 @@ def plot_boundary_conditions(test_boundaries=False):
         mapview = flopy.plot.PlotMapView(ax=ax_plan, modelgrid=grid, layer=4)
         linecollection = mapview.plot_grid(lw=0.05)
 
-
         cross_section = gpd.read_file(data_dir.joinpath('cross_section.shp'))
         coords = cross_section['geometry'][0].coords.xy
         ax_plan.plot(coords[0], coords[1], ls="--", color='teal')
@@ -256,7 +255,7 @@ def plot_boundary_conditions(test_boundaries=False):
         xsect = flopy.plot.PlotCrossSection(ax=ax_xsect, modelgrid=grid, line=line)
         xsect.plot_grid(lw=0.05)
         lims = ax_xsect.get_xlim()
-        ax_xsect.set_xlim(lims[0]-50, lims[1]+50)
+        ax_xsect.set_xlim(lims[0] - 50, lims[1] + 50)
         boundaries = discretization.get_boundary_arrays()
         onshore = np.ones_like(grid.botm) * np.nan
         onshore[boundaries['onshore']] = 1
@@ -281,18 +280,19 @@ def plot_boundary_conditions(test_boundaries=False):
         zoom_dx = 250
         zoom_dy = 150
 
-        patch = mpatches.Rectangle(xy=zoom_ll, width=zoom_dx, height=zoom_dy, edgecolor='olivedrab', facecolor='none', lw=1,
+        patch = mpatches.Rectangle(xy=zoom_ll, width=zoom_dx, height=zoom_dy, edgecolor='olivedrab', facecolor='none',
+                                   lw=1,
                                    zorder=12)
         ax_plan.add_patch(patch)
 
         ax_p_plan.set_aspect('equal')
         mapview_p = flopy.plot.PlotMapView(ax=ax_p_plan, modelgrid=grid, layer=0,
-                                           extent=(zoom_ll[0], zoom_ll[0]+zoom_dx, zoom_ll[1], zoom_ll[1]+zoom_dy))
+                                           extent=(zoom_ll[0], zoom_ll[0] + zoom_dx, zoom_ll[1], zoom_ll[1] + zoom_dy))
         linecollection_p = mapview_p.plot_grid(lw=0.1)
         ax_p_plan.plot(coords[0], coords[1], ls="--", color='teal')
 
-        zoom_area = Polygon([(zoom_ll[0], zoom_ll[1]), (zoom_ll[0]+zoom_dx, zoom_ll[1]),
-                                (zoom_ll[0]+zoom_dx, zoom_ll[1]+zoom_dy), (zoom_ll[0], zoom_ll[1]+zoom_dy)])
+        zoom_area = Polygon([(zoom_ll[0], zoom_ll[1]), (zoom_ll[0] + zoom_dx, zoom_ll[1]),
+                             (zoom_ll[0] + zoom_dx, zoom_ll[1] + zoom_dy), (zoom_ll[0], zoom_ll[1] + zoom_dy)])
         zoom_line = shapely.intersection(zoom_area, cross_section['geometry'][0])
 
         coords = zoom_line.coords.xy
@@ -302,19 +302,19 @@ def plot_boundary_conditions(test_boundaries=False):
         xsect_p = flopy.plot.PlotCrossSection(ax=ax_p_xsect, modelgrid=grid, line=line2)
         xsect_p.plot_grid(lw=0.1)
 
-        anchor_b= (1758450, 5433570)
-        anchor_c = (zoom_ll[0]+zoom_dx+50, zoom_ll[1]+zoom_dy+50)
+        anchor_b = (1758450, 5433570)
+        anchor_c = (zoom_ll[0] + zoom_dx + 50, zoom_ll[1] + zoom_dy + 50)
         anchor_d = (1758195, 5432240)
-        angle_b = np.arctan((temp_line[0][0]-temp_line[1][0])/(temp_line[0][1]-temp_line[1][1]))
-        angle_d = np.arctan((temp_line1[0][0]-temp_line1[1][0])/(temp_line1[0][1]-temp_line1[1][1]))
-        angle_b = -90-np.rad2deg(angle_b)
-        angle_d = -90-np.rad2deg(angle_d)
+        angle_b = np.arctan((temp_line[0][0] - temp_line[1][0]) / (temp_line[0][1] - temp_line[1][1]))
+        angle_d = np.arctan((temp_line1[0][0] - temp_line1[1][0]) / (temp_line1[0][1] - temp_line1[1][1]))
+        angle_b = -90 - np.rad2deg(angle_b)
+        angle_d = -90 - np.rad2deg(angle_d)
 
         tb = ax_plan.text(anchor_b[0], anchor_b[1], "(b)", fontsize=8, ha='left', va='bottom',
-                     rotation=angle_b, rotation_mode='anchor')
+                          rotation=angle_b, rotation_mode='anchor')
         tc = ax_plan.text(anchor_c[0], anchor_c[1], "(c)", fontsize=8, ha='left', va='bottom')
         td = ax_p_plan.text(anchor_d[0], anchor_d[1], "(d)", fontsize=8, ha='left', va='bottom',
-                       rotation=angle_d, rotation_mode='anchor')
+                            rotation=angle_d, rotation_mode='anchor')
         for t in [tb, tc, td]:
             t.set_bbox(dict(facecolor='white', alpha=0.7, edgecolor='None'))
 
@@ -333,7 +333,7 @@ def plot_boundary_conditions(test_boundaries=False):
         offshore_patch = mpatches.Patch(color=cm.viridis(0.5), alpha=0.5, label='Offshore CHD')
         seafloor_patch = mpatches.Patch(color=cm.viridis(1.0), alpha=0.5, label='Seafloor CHD and CNC')
 
-        ax_xsect.legend(handles=[onshore_patch,offshore_patch,seafloor_patch],loc='upper right', fontsize=6)
+        ax_xsect.legend(handles=[onshore_patch, offshore_patch, seafloor_patch], loc='upper right', fontsize=6)
         ax_plan.text(0.9, 1.05, '(a)', fontsize=9, transform=ax_plan.transAxes)
         ax_xsect.text(0.95, 1.05, '(b)', fontsize=9, transform=ax_xsect.transAxes)
         ax_p_plan.text(0.95, 1.05, '(c)', fontsize=9, transform=ax_p_plan.transAxes)
@@ -354,8 +354,8 @@ def plot_boundary_conditions(test_boundaries=False):
         savedir = unbacked_dir.joinpath('figures')
         plt.savefig(savedir.joinpath(f"{leapfrog_name}_boundary_conditions.png"), dpi=600)
 
-def plot_aquitard_thickness(modelgrid=False):
 
+def plot_aquitard_thickness(modelgrid=False):
     if modelgrid:
         offshore = discretization.get_offshore()
         grid = discretization.get_grid_w_ibound()
@@ -363,7 +363,7 @@ def plot_aquitard_thickness(modelgrid=False):
         zone_data = discretization.get_zone_array()
         f, ax = plt.subplots()
         pmv = flopy.plot.PlotMapView(ax=ax, modelgrid=grid, layer=18)
-        distal_thickness = (np.argmax(zone_data>2, axis=0) - np.argmax(zone_data==2, axis=0))*grid.delz[0][0][0]
+        distal_thickness = (np.argmax(zone_data > 2, axis=0) - np.argmax(zone_data == 2, axis=0)) * grid.delz[0][0][0]
         thickness = pmv.plot_array(np.multiply(distal_thickness, offshore), cmap="bone_r", vmin=0, vmax=20)
         plt.colorbar(thickness, label="Silt thickness [m]")
         ax.set_aspect('equal')
@@ -376,11 +376,11 @@ def plot_aquitard_thickness(modelgrid=False):
         mc23 = (-41.2394, 174.8873)
         # mc14 = (-41.2418, 174.8896)
         sv1 = (-41.242, 174.886)
-        sv6 = (-41.24787+0.0018, 174.8878)
+        sv6 = (-41.24787 + 0.0018, 174.8878)
         # points = np.genfromtxt("/home/connor/PycharmProjects/pockmarks/data/gis/coordinates.csv", delimiter=',', skip_header=1)[:, 1:]
         path = project_dir.joinpath('data', 'coordinates_from_harding_appendix.csv')
         points = np.genfromtxt(path,
-                               delimiter=',', skip_header=1)[:,1:]
+                               delimiter=',', skip_header=1)[:, 1:]
         mc_names = ["MC2-1", "MC2-2", "MC2-3"]
         sv_names = ["SV1", "SV6"]
         mc_coords = [points[0], points[1], points[2]]
@@ -397,14 +397,16 @@ def plot_aquitard_thickness(modelgrid=False):
         first = True
         for name, coord in zip(mc_names, mc_coords):
             nztm = transformer.transform(*coord)
-            ax.scatter(nztm[1], nztm[0], marker='v', color='peru', lw=1, s=20, label="Sediment Cores" if first else None, zorder=15, facecolors='none')
+            ax.scatter(nztm[1], nztm[0], marker='v', color='peru', lw=1, s=20,
+                       label="Sediment Cores" if first else None, zorder=15, facecolors='none')
             first = False
         first = True
         for name, coord in zip(sv_names, sv_coords):
             coord[0] += +0.0016666
             nztm = transformer.transform(*coord)
             print(nztm)
-            ax.scatter(nztm[1], nztm[0], marker='^', color='blue', lw=1,  s=20, label="Discharge Observations" if first else None, zorder=15, facecolors='none')
+            ax.scatter(nztm[1], nztm[0], marker='^', color='blue', lw=1, s=20,
+                       label="Discharge Observations" if first else None, zorder=15, facecolors='none')
             first = False
 
         points[4][0] += +0.0016666
@@ -445,6 +447,7 @@ def plot_aquitard_thickness(modelgrid=False):
         savedir = unbacked_dir.joinpath('figures')
         f.savefig(savedir.joinpath("aquitard_thickness_map.png"), dpi=600)
 
+
 def plot_aquitards_resistance():
     offshore = discretization.get_offshore()
     grid = discretization.get_grid_w_ibound()
@@ -457,10 +460,12 @@ def plot_aquitards_resistance():
 
     for row in range(grid.nrow):
         for col in range(grid.ncol):
-            resistance[row, col] += len(np.where(zone_data[:, row, col] ==1))*1/h_params['vkpu']
-            resistance[row, col] += len(np.where(zone_data[:, row, col]==2))*1/h_params['vkpd']
-            resistance[row, col] += len(np.where(zone_data[:, row, col]==3))*1/h_params['vkpl']
-            resistance[row, col] = len(np.where(zone_data[:, row, col]>=1) and np.where(zone_data[:, row, col]<=3))*grid.delz[0][0][0]*resistance[row, col]
+            resistance[row, col] += len(np.where(zone_data[:, row, col] == 1)) * 1 / h_params['vkpu']
+            resistance[row, col] += len(np.where(zone_data[:, row, col] == 2)) * 1 / h_params['vkpd']
+            resistance[row, col] += len(np.where(zone_data[:, row, col] == 3)) * 1 / h_params['vkpl']
+            resistance[row, col] = len(
+                np.where(zone_data[:, row, col] >= 1) and np.where(zone_data[:, row, col] <= 3)) * grid.delz[0][0][0] * \
+                                   resistance[row, col]
 
     r_plot = pmv.plot_array(resistance, cmap="bone_r")
     plt.colorbar(r_plot, label="Aquitard resistance [days]")
@@ -476,11 +481,12 @@ def plot_cross_section_boundaries(name):
     )
     gwf = sim.get_model(name)
     grid = discretization.get_grid_w_ibound()
-    xsect = flopy.plot.PlotCrossSection(model=gwf, line={"Row": grid.nrow//2})
+    xsect = flopy.plot.PlotCrossSection(model=gwf, line={"Row": grid.nrow // 2})
     xsect.plot_ibound()
     xsect.plot_bc('CHD', color='yellow')
     xsect.plot_bc('GHB', color='purple')
     plt.show()
+
 
 def plot_surface_fluxes(name, timestep=-1, wrong_formulation=False):
     grid = discretization.get_grid_w_ibound()
@@ -495,9 +501,9 @@ def plot_surface_fluxes(name, timestep=-1, wrong_formulation=False):
     gwf = sim.get_model(name)
     bud = gwf.output.budget()
     qx, qy, qz = flopy.utils.postprocessing.get_specific_discharge(
-                    bud.get_data(text="DATA-SPDIS", totim=bud.get_times()[timestep])[0],
-                    gwf,
-                )
+        bud.get_data(text="DATA-SPDIS", totim=bud.get_times()[timestep])[0],
+        gwf,
+    )
     qz = np.nansum(np.multiply(qz, seafloor), axis=0)
     f, axs = plt.subplots(1, 2, figsize=(8, 5))
     c = flopy.plot.PlotMapView(ax=axs[0], modelgrid=grid)
@@ -510,8 +516,8 @@ def plot_surface_fluxes(name, timestep=-1, wrong_formulation=False):
     plt.savefig(f"/home/connor/PycharmProjects/pockmarks/figures/surface_fluxes_{name}.png", dpi=600)
     pass
 
-def plot_cross_section_flux_salinity(name, simple=True):
 
+def plot_cross_section_flux_salinity(name, simple=True):
     f, axs = plt.subplots(2, 1, figsize=(4, 6))
 
     data = utils.get_final_results(name)
@@ -538,11 +544,8 @@ def plot_cross_section_flux_salinity(name, simple=True):
     # xsect.plot_ibound(zorder=1)
     xsect2 = flopy.plot.PlotCrossSection(ax=axs[1], modelgrid=grid, line=line)
     q_cm = xsect2.plot_array(qz, cmap='PuOr',
-                                norm=colors.SymLogNorm(linthresh=1e-6, linscale=1e-6, vmin=-1e-4, vmax=1e-4))
+                             norm=colors.SymLogNorm(linthresh=1e-6, linscale=1e-6, vmin=-1e-4, vmax=1e-4))
     plt.savefig(f"/home/connor/PycharmProjects/pockmarks/figures/xsect_flux_salinity_{name}.png", dpi=600)
-
-
-
 
 
 def plot_cross_sections_and_surface_fluxes_over_time(name):
@@ -578,8 +581,8 @@ def plot_cross_sections_and_surface_fluxes_over_time(name):
 
     f.savefig(f"/home/connor/PycharmProjects/pockmarks/figures/xsect_conc_over_time_{name}.png", dpi=600)
 
-def plot_cross_section_vectors(name, simple=True):
 
+def plot_cross_section_vectors(name, simple=True):
     f, ax = plt.subplots(figsize=(10, 6))
     if not os.path.exists(f"/home/connor/PycharmProjects/pockmarks/outputs/{name}/final_step.npz"):
         sim = flopy.mf6.MFSimulation.load(
@@ -637,6 +640,7 @@ def plot_cross_section_vectors(name, simple=True):
 
     pass
 
+
 def plot_surface_vectors(name):
     grid = discretization.get_grid_w_ibound()
     sim = flopy.mf6.MFSimulation.load(
@@ -665,9 +669,9 @@ def plot_surface_vectors(name):
 
     plt.savefig(f"/home/connor/PycharmProjects/pockmarks/figures/surface_vectors_{name}.png", dpi=600)
 
+
 def plot_pockmark(name, i, grid, ax_plan=None, ax_section=None, label_sections=False,
                   ylim=None, vectors=True, contours=False, section_line=True, discharge_on_plan=False):
-
     data = utils.get_final_results(name)
     savepath = data_dir.joinpath("pockmarks6_new.shp")
     pockmark = gpd.read_file(savepath, crs='EPSG:2193')['geometry'][i]
@@ -686,7 +690,7 @@ def plot_pockmark(name, i, grid, ax_plan=None, ax_section=None, label_sections=F
 
     if ax_plan is not None:
         pockmark_plan = flopy.plot.PlotMapView(ax=ax_plan, modelgrid=grid, layer=1, extent=square_extent)
-    # pockmark_plan.plot_grid()
+        # pockmark_plan.plot_grid()
         pockmark_plan.plot_array(data['conc'], vmin=0, vmax=35)
 
     if ax_section is not None:
@@ -726,7 +730,8 @@ def plot_pockmark(name, i, grid, ax_plan=None, ax_section=None, label_sections=F
         orthogonal = orthogonal / np.linalg.norm(orthogonal)
 
         anchor_start = (
-        start_point_along_line[0] + mult * 10 * orthogonal[0], start_point_along_line[1] + mult * 10 * orthogonal[1])
+            start_point_along_line[0] + mult * 10 * orthogonal[0],
+            start_point_along_line[1] + mult * 10 * orthogonal[1])
 
         tstart = ax_plan.text(anchor_start[0], anchor_start[1], f"{i + 1}", fontsize=6, ha='left', va='bottom',
                               rotation=angle_start, rotation_mode='anchor')
@@ -754,7 +759,7 @@ def plot_pockmark(name, i, grid, ax_plan=None, ax_section=None, label_sections=F
         orthogonal = (1, -end_vec[0] / end_vec[1])
         orthogonal = orthogonal / np.linalg.norm(orthogonal)
         anchor_end = (
-        end_point_along_line[0] + mult * 10 * orthogonal[0], end_point_along_line[1] + mult * 10 * orthogonal[1])
+            end_point_along_line[0] + mult * 10 * orthogonal[0], end_point_along_line[1] + mult * 10 * orthogonal[1])
 
         tstart = ax_plan.text(anchor_end[0], anchor_end[1], f"{i + 1}'", fontsize=6, ha='right', va='bottom',
                               rotation=angle_end, rotation_mode='anchor')
@@ -767,7 +772,8 @@ def plot_pockmark(name, i, grid, ax_plan=None, ax_section=None, label_sections=F
             plot_unstructured_vectors(ax_section, pockmark_section, data['qx'], data['qy'], data['qz'], section, 4, 4,
                                       zone_array)
         if contours:
-            contours = pockmark_section.contour_array(data['conc'], levels=[35*0.05], linewidths=0.5, colors='red', linestyles='dashed')
+            contours = pockmark_section.contour_array(data['conc'], levels=[35 * 0.05], linewidths=0.5, colors='red',
+                                                      linestyles='dashed')
             # ax_section.clabel(contours, inline=True, fontsize=5, fmt={35*0.05: r"5% salinity"})
 
     if ax_plan is not None:
@@ -791,21 +797,25 @@ def plot_pockmark(name, i, grid, ax_plan=None, ax_section=None, label_sections=F
 
         ax_section.text(0.025, 0.01, rf"{pockmarks_data.iloc[i]['discharge']:.2f} m$^3$/day",
                         fontsize=6, transform=ax_section.transAxes, color="white", ha='left', va='bottom')
-        ax_section.text(0.975, 0.01, f"{pockmarks_data.iloc[i]['concentration']:.1f} PSU" if pockmarks_data.iloc[i]['discharge'] > 0 else "35 PSU",
+        ax_section.text(0.975, 0.01, f"{pockmarks_data.iloc[i]['concentration']:.1f} PSU" if pockmarks_data.iloc[i][
+                                                                                                 'discharge'] > 0 else "35 PSU",
                         fontsize=6, transform=ax_section.transAxes, color='white', ha='right', va='bottom')
 
     if discharge_on_plan:
         pockmarks_data = utils.get_final_pockmark_results(name)
         ax_plan.text(0.025, 0.01, rf"{pockmarks_data.iloc[i]['discharge']:.2f} m$^3$/day",
-                        fontsize=6, transform=ax_plan.transAxes, color="black", ha='left', va='bottom')
-        ax_plan.text(0.975, 0.01, f"{pockmarks_data.iloc[i]['concentration']:.1f} PSU" if pockmarks_data.iloc[i]['discharge'] > 0 else "35 PSU",
-                        fontsize=6, transform=ax_plan.transAxes, color='black', ha='right', va='bottom')
+                     fontsize=6, transform=ax_plan.transAxes, color="black", ha='left', va='bottom')
+        ax_plan.text(0.975, 0.01, f"{pockmarks_data.iloc[i]['concentration']:.1f} PSU" if pockmarks_data.iloc[i][
+                                                                                              'discharge'] > 0 else "35 PSU",
+                     fontsize=6, transform=ax_plan.transAxes, color='black', ha='right', va='bottom')
 
 
 def plot_salinity_at_pockmarks(name, ylim=None, head=False):
     # load pockmarks
-    pockmarks = gpd.read_file('/home/connor/PycharmProjects/pockmarks/data/pockmarks6_new.shp', crs='EPSG:2193')
-    sections = gpd.read_file('/home/connor/PycharmProjects/pockmarks/data/pockmark_sections.shp')
+    savepath = data_dir.joinpath("pockmarks6_new.shp")
+    pockmarks = gpd.read_file(savepath, crs='EPSG:2193')
+    savepath = data_dir.joinpath("pockmark_sections.shp")
+    sections = gpd.read_file(savepath)
     # load grid
     grid = discretization.get_grid_w_ibound()
     # load concentration
@@ -841,8 +851,10 @@ def plot_salinity_at_pockmarks(name, ylim=None, head=False):
 
     # plot_map
     # mapview = flopy.plot.PlotMapView(ax=ax_map, modelgrid=grid, layer=4)
-    base = rasterio.open("/home/connor/PycharmProjects/pockmarks/map/data/basemap.tif")
-    model_area = gpd.read_file('/home/connor/PycharmProjects/pockmarks/data/model_area0.shp')
+    savepath = map_data_dir.joinpath("basemap.tif")
+    base = rasterio.open(savepath)
+    savepath = map_data_dir.joinpath("model_area.shp")
+    model_area = gpd.read_file(savepath)
     extent = model_area.total_bounds
     show(base, ax=ax_map, alpha=0.7, zorder=0)
     ax_map.set_xlim(extent[0], extent[2])
@@ -871,21 +883,20 @@ def plot_salinity_at_pockmarks(name, ylim=None, head=False):
     label_sides = ['left', 'left', 'left', 'right', 'right', 'right']
 
     for i, (color, pockmark, section, ax_plan, ax_section, label_side) in enumerate(zip(
-        colors, pockmarks['geometry'], sections['geometry'], axs_plan, axs_section, label_sides
+            colors, pockmarks['geometry'], sections['geometry'], axs_plan, axs_section, label_sides
     )):
         bounds = shapely.union(pockmark, section).bounds
-        if bounds[2]-bounds[0] > bounds[3]-bounds[1]:
-            add = ((bounds[2] - bounds[0]) - (bounds[3] - bounds[1]))/2
-            square_extent = (bounds[0], bounds[2], bounds[1]-add, bounds[3]+add)
+        if bounds[2] - bounds[0] > bounds[3] - bounds[1]:
+            add = ((bounds[2] - bounds[0]) - (bounds[3] - bounds[1])) / 2
+            square_extent = (bounds[0], bounds[2], bounds[1] - add, bounds[3] + add)
         else:
-            add = ((bounds[3] - bounds[1]) - (bounds[2] - bounds[0]))/2
-            square_extent = (bounds[0]-add, bounds[2]+add, bounds[1], bounds[3])
+            add = ((bounds[3] - bounds[1]) - (bounds[2] - bounds[0])) / 2
+            square_extent = (bounds[0] - add, bounds[2] + add, bounds[1], bounds[3])
 
         if label_side == 'left':
-            ax_map.text(pockmark.bounds[0]-40, pockmark.centroid.y, f"{i+1}", fontsize=6, ha='right', va='center')
+            ax_map.text(pockmark.bounds[0] - 40, pockmark.centroid.y, f"{i + 1}", fontsize=6, ha='right', va='center')
         else:
-            ax_map.text(pockmark.bounds[2]+40, pockmark.centroid.y, f"{i+1}", fontsize=6, ha='left', va='center')
-
+            ax_map.text(pockmark.bounds[2] + 40, pockmark.centroid.y, f"{i + 1}", fontsize=6, ha='left', va='center')
 
         pockmark_plan = flopy.plot.PlotMapView(ax=ax_plan, modelgrid=grid, layer=1, extent=square_extent)
         # pockmark_plan.plot_grid()
@@ -900,7 +911,6 @@ def plot_salinity_at_pockmarks(name, ylim=None, head=False):
 
         pockmark_section = flopy.plot.PlotCrossSection(ax=ax_section, modelgrid=grid, line={"Line": temp_line})
 
-
         ax_plan.plot(coords[0], coords[1], ls="--", color=color)
 
         angle_start = np.arctan((coords[1][1] - coords[1][0]) / (coords[0][1] - coords[0][0]))
@@ -914,22 +924,23 @@ def plot_salinity_at_pockmarks(name, ylim=None, head=False):
         else:
             if coords[1][1] > coords[1][0]:
                 mult = - 1
-                angle_start = -angle_start-180
+                angle_start = -angle_start - 180
             else:
                 mult = 1
-                angle_start = 180+angle_start
+                angle_start = 180 + angle_start
 
+        anchor_start = (coords[0][0] + mult * 10, coords[1][0] + mult * 10)
+        start_vec = [coords[0][1] - coords[0][0], coords[1][1] - coords[1][0]] / np.linalg.norm(
+            [coords[0][1] - coords[0][0], coords[1][1] - coords[1][0]])
+        start_point_along_line = (coords[0][0] + 20 * start_vec[0], coords[1][0] + 20 * start_vec[1])
+        orthogonal = (1, -start_vec[0] / start_vec[1])
+        orthogonal = orthogonal / np.linalg.norm(orthogonal)
 
-        anchor_start = (coords[0][0] + mult*10, coords[1][0] + mult*10)
-        start_vec = [coords[0][1] - coords[0][0], coords[1][1] - coords[1][0]]/np.linalg.norm([coords[0][1] - coords[0][0], coords[1][1] - coords[1][0]])
-        start_point_along_line = (coords[0][0] + 20*start_vec[0], coords[1][0] + 20*start_vec[1])
-        orthogonal = (1, -start_vec[0]/start_vec[1])
-        orthogonal = orthogonal/np.linalg.norm(orthogonal)
+        anchor_start = (start_point_along_line[0] + mult * 10 * orthogonal[0],
+                        start_point_along_line[1] + mult * 10 * orthogonal[1])
 
-        anchor_start = (start_point_along_line[0] + mult * 10*orthogonal[0], start_point_along_line[1] + mult * 10*orthogonal[1])
-
-        tstart = ax_plan.text(anchor_start[0], anchor_start[1], f"{i+1}", fontsize=6, ha='left', va='bottom',
-                          rotation=angle_start, rotation_mode='anchor')
+        tstart = ax_plan.text(anchor_start[0], anchor_start[1], f"{i + 1}", fontsize=6, ha='left', va='bottom',
+                              rotation=angle_start, rotation_mode='anchor')
 
         angle_end = np.arctan((coords[1][-2] - coords[1][-1]) / (coords[0][-2] - coords[0][-1]))
         angle_end = np.abs(np.degrees(angle_end))
@@ -942,31 +953,33 @@ def plot_salinity_at_pockmarks(name, ylim=None, head=False):
         else:
             if coords[1][-1] > coords[1][-2]:
                 mult = - 1
-                angle_end = -angle_end- 180
+                angle_end = -angle_end - 180
             else:
                 mult = 1
                 angle_end = 180 + angle_end
 
-        anchor_end = (coords[0][-1] - mult*10, coords[1][-1] + mult*10)
+        anchor_end = (coords[0][-1] - mult * 10, coords[1][-1] + mult * 10)
         end_vec = [coords[0][-2] - coords[0][-1], coords[1][-2] - coords[1][-1]] / np.linalg.norm(
             [coords[0][-2] - coords[0][-1], coords[1][-2] - coords[1][-1]])
         end_point_along_line = (coords[0][-1] + 20 * end_vec[0], coords[1][-1] + 20 * end_vec[1])
         orthogonal = (1, -end_vec[0] / end_vec[1])
         orthogonal = orthogonal / np.linalg.norm(orthogonal)
-        anchor_end = (end_point_along_line[0] + mult * 10 * orthogonal[0], end_point_along_line[1] + mult * 10 * orthogonal[1])
+        anchor_end = (end_point_along_line[0] + mult * 10 * orthogonal[0],
+                      end_point_along_line[1] + mult * 10 * orthogonal[1])
 
-        tstart = ax_plan.text(anchor_end[0], anchor_end[1], f"{i+1}'", fontsize=6, ha='right', va='bottom',
+        tstart = ax_plan.text(anchor_end[0], anchor_end[1], f"{i + 1}'", fontsize=6, ha='right', va='bottom',
                               rotation=angle_end, rotation_mode='anchor')
         if head is not None:
             pockmark_section.plot_array(head, vmin=np.max(head), vmax=np.min(head), cmap='plasma')
         else:
             pockmark_section.plot_array(conc, vmin=0, vmax=35)
 
-        if i in [3,4]:
-            reverse=True
+        if i in [3, 4]:
+            reverse = True
         else:
             reverse = False
-        max_distal, Qu = plot_unstructured_vectors(ax_section, pockmark_section, data['qx'], data['qy'], data['qz'], section,4, 4, zone_array, reverse=reverse, base_of_silt=True)
+        max_distal, Qu = plot_unstructured_vectors(ax_section, pockmark_section, data['qx'], data['qy'], data['qz'],
+                                                   section, 4, 4, zone_array, reverse=reverse, base_of_silt=True)
 
         ax_plan.set_ylabel('Nztm y [m]')
         ax_section.set_ylabel('Nzvd z [m]')
@@ -974,7 +987,6 @@ def plot_salinity_at_pockmarks(name, ylim=None, head=False):
 
         ax_plan.set_box_aspect(1)
         ax_section.set_box_aspect(1)
-
 
         if i > 3:
             ax_plan.set_xlabel('Nztm x [m]', labelpad=15)
@@ -989,14 +1001,13 @@ def plot_salinity_at_pockmarks(name, ylim=None, head=False):
             new_labels = [f"{max - tick:.0f}" for tick in ticks]
             ax_section.set_xticklabels(new_labels)
 
-        ax_section.text(0.025, 0.975, f"{i+1}", fontsize=6, transform=ax_section.transAxes, ha='left', va='top')
-        ax_section.text(0.975, 0.975, f"{i+1}'", fontsize=6, transform=ax_section.transAxes, ha='right', va='top')
+        ax_section.text(0.025, 0.975, f"{i + 1}", fontsize=6, transform=ax_section.transAxes, ha='left', va='top')
+        ax_section.text(0.975, 0.975, f"{i + 1}'", fontsize=6, transform=ax_section.transAxes, ha='right', va='top')
 
         ax_section.text(0.025, 0.01, rf"{pockmarks_data.iloc[i]['discharge']:.2f} m$^3$/day",
                         fontsize=6, transform=ax_section.transAxes, color="white", ha='left', va='bottom')
         ax_section.text(0.975, 0.01, f"{pockmarks_data.iloc[i]['concentration']:.1f} PSU",
                         fontsize=6, transform=ax_section.transAxes, color='white', ha='right', va='bottom')
-
 
     # add legend below ax section
     # with grey : line for base of silt
@@ -1005,8 +1016,10 @@ def plot_salinity_at_pockmarks(name, ylim=None, head=False):
     legend_elements = [Line2D([0], [0], color='orange', lw=1, label='Base of silt layer', ls=':')]
     ax_section.legend(handles=legend_elements, loc='upper center', bbox_to_anchor=(0.5, -0.4), fontsize=6)
     # also add matplotlib quiver handle for vector scale using and transform to ax_section
-    ax_section.quiverkey(Qu, X=0.5, Y=-0.75, U=5e-5, label=f'{5e-5:.1g} m/day', labelpos='S', coordinates='axes', color='black')
-    ax_section.quiverkey(Qu, X=0.5, Y=-1, U=1e-5, label=f'{1e-5:.1g} m/day', labelpos='S', coordinates='axes', color='black')
+    ax_section.quiverkey(Qu, X=0.5, Y=-0.75, U=5e-5, label=f'{5e-5:.1g} m/day', labelpos='S', coordinates='axes',
+                         color='black')
+    ax_section.quiverkey(Qu, X=0.5, Y=-1, U=1e-5, label=f'{1e-5:.1g} m/day', labelpos='S', coordinates='axes',
+                         color='black')
 
     if head is not None:
         norm = mpl.colors.Normalize(vmin=np.nanmin(head), vmax=np.nanmax(head))
@@ -1021,16 +1034,15 @@ def plot_salinity_at_pockmarks(name, ylim=None, head=False):
 
     non_pockmark_data = utils.get_total_seafloor_discharge(name)
     ax_map.text(0.025, 0.055, rf"{non_pockmark_data['discharge']:.2f} m$^3$/day",
-                        fontsize=6, transform=ax_map.transAxes, color="white", ha='left', va='bottom')
+                fontsize=6, transform=ax_map.transAxes, color="white", ha='left', va='bottom')
     ax_map.text(0.025, 0.015, f"{non_pockmark_data['conc']:.1f} PSU",
-                        fontsize=6, transform=ax_map.transAxes, color='white', ha='left', va='bottom')
+                fontsize=6, transform=ax_map.transAxes, color='white', ha='left', va='bottom')
 
     ax_map.text(0.975, 1.025, "(a)", fontsize=7, transform=ax_map.transAxes, ha='right', va='bottom')
     for ax, let in zip(axs_plan, ['(b)', '(d)', '(f)', '(h)', '(j)', '(l)']):
         ax.text(0.975, 1.025, let, fontsize=7, transform=ax.transAxes, ha='right', va='bottom')
     for ax, let in zip(axs_section, ['(c)', '(e)', '(g)', '(i)', '(k)', '(m)']):
         ax.text(0.975, 1.025, let, fontsize=7, transform=ax.transAxes, ha='right', va='bottom')
-
 
     for ax in np.array([ax_map, *axs_plan, *axs_section]):
         ax.fill_between(ax.get_xlim(), ax.get_ylim()[0], ax.get_ylim()[1], color='white', alpha=1, zorder=-1)
@@ -1043,11 +1055,11 @@ def plot_salinity_at_pockmarks(name, ylim=None, head=False):
     # plan view
     # cross section
 
-def plot_changes_and_examples(set, names, examples = ((0, 5), (1, 5), (4, 5), (5, 5)), color_bars_by_c=False, version=0):
 
+def plot_changes_and_examples(set, names, examples=((0, 5), (1, 5), (4, 5), (5, 5)), color_bars_by_c=False, version=0):
     if version == 0:
         f = plt.figure(figsize=(8, 6))
-        gs = f.add_gridspec(4,4, height_ratios=[1, 0.75, 0, 0.1], hspace=0.65, wspace=0.25)
+        gs = f.add_gridspec(4, 4, height_ratios=[1, 0.75, 0, 0.1], hspace=0.65, wspace=0.25)
         plt.rcParams.update({'font.size': 8})
         ax_discharges = f.add_subplot(gs[0, :2])
         ax_concentrations = f.add_subplot(gs[0, 2:])
@@ -1061,7 +1073,9 @@ def plot_changes_and_examples(set, names, examples = ((0, 5), (1, 5), (4, 5), (5
         for name in names:
             temp_pockmarks = utils.get_final_pockmark_results(name)
             pockmarks_discharge.append(temp_pockmarks['discharge'].sum())
-            pockmarks_concentration.append((temp_pockmarks['concentration']*temp_pockmarks['discharge']).sum()/temp_pockmarks['discharge'].sum())
+            pockmarks_concentration.append(
+                (temp_pockmarks['concentration'] * temp_pockmarks['discharge']).sum() / temp_pockmarks[
+                    'discharge'].sum())
             temp_total = utils.get_total_seafloor_discharge(name)
             total_discharge.append(temp_total['discharge'])
             total_concentration.append(temp_total['conc'])
@@ -1077,11 +1091,11 @@ def plot_changes_and_examples(set, names, examples = ((0, 5), (1, 5), (4, 5), (5
             color_pockmark = ['tab:olive', 'tab:green', 'tab:cyan', 'tab:grey', 'orchid', 'chocolate']
             color_total = ['tab:olive', 'tab:green', 'tab:cyan', 'tab:grey', 'orchid', 'chocolate']
 
-        X_axis = np.arange(len(names)/3)
-        ax_discharges.bar(X_axis - 0.2, pockmarks_discharge, 0.4, color=color_pockmark , label='Pockmarks')
+        X_axis = np.arange(len(names) / 3)
+        ax_discharges.bar(X_axis - 0.2, pockmarks_discharge, 0.4, color=color_pockmark, label='Pockmarks')
         ax_discharges.bar(X_axis + 0.2, total_discharge, 0.4, color=color_total,
-                          alpha = 1 if color_bars_by_c else 0.3, label='Distributed')
-        ax_discharges.set_xticklabels([None] + [f"{i+1}" for i in range(len(names))])
+                          alpha=1 if color_bars_by_c else 0.3, label='Distributed')
+        ax_discharges.set_xticklabels([None] + [f"{i + 1}" for i in range(len(names))])
         ax_discharges.set_xlabel('Scenario')
         ax_discharges.set_ylabel(r'Discharge [m$^3$/day]')
 
@@ -1096,7 +1110,7 @@ def plot_changes_and_examples(set, names, examples = ((0, 5), (1, 5), (4, 5), (5
 
         for i, (scen, init, color) in enumerate(zip(conc_scens, conc_inits, conc_colors)):
             data = utils.get_max_waiwhetu_concentration_over_time(scen, init)
-            ax_concentrations.plot(data['times'], data["max_conc"], label=f"Scenario {i+3}", color=color)
+            ax_concentrations.plot(data['times'], data["max_conc"], label=f"Scenario {i + 3}", color=color)
 
         ax_concentrations.legend(loc='upper left', fontsize=6)
 
@@ -1109,12 +1123,15 @@ def plot_changes_and_examples(set, names, examples = ((0, 5), (1, 5), (4, 5), (5
         pockmark_colors = ['tab:red', 'tab:orange', 'tab:brown', 'tab:purple', 'tab:blue', 'tab:pink']
         for i, example in enumerate(examples):
             color = pockmark_colors[example[0]]
-            plot_pockmark(names[example[0]], example[1], grid, color='black', ax_plan=None, ax_section=axs_pockmarks[i], ylim=-10)
+            plot_pockmark(names[example[0]], example[1], grid, color='black', ax_plan=None, ax_section=axs_pockmarks[i],
+                          ylim=-10)
             if i > 0:
                 axs_pockmarks[i].set_yticklabels([])
                 axs_pockmarks[i].set_ylabel('')
-            axs_pockmarks[i].text(0.025, 0.975, f"Scenario {example[0]+1}", fontsize=6, transform=axs_pockmarks[i].transAxes, ha='left', va='top')
-            axs_pockmarks[i].text(0.975, 0.975, f"Pockmark {example[1]+1}", fontsize=6, transform=axs_pockmarks[i].transAxes, ha='right', va='top')
+            axs_pockmarks[i].text(0.025, 0.975, f"Scenario {example[0] + 1}", fontsize=6,
+                                  transform=axs_pockmarks[i].transAxes, ha='left', va='top')
+            axs_pockmarks[i].text(0.975, 0.975, f"Pockmark {example[1] + 1}", fontsize=6,
+                                  transform=axs_pockmarks[i].transAxes, ha='right', va='top')
 
         norm = mpl.colors.Normalize(vmin=0, vmax=35)
         mappable = plt.cm.ScalarMappable(cmap='viridis', norm=norm)
@@ -1128,7 +1145,7 @@ def plot_changes_and_examples(set, names, examples = ((0, 5), (1, 5), (4, 5), (5
         gs = f.add_gridspec(5, 3, height_ratios=[1, 1, 1, 0, 0.1], hspace=0.5, wspace=0.1)
         plt.rcParams.update({'font.size': 8})
         ax_discharges = f.add_subplot(gs[0, :])
-        axs_pockmarks = [f.add_subplot(gs[1+i//3, i%3]) for i in range(6)]
+        axs_pockmarks = [f.add_subplot(gs[1 + i // 3, i % 3]) for i in range(6)]
         ax_cb = f.add_subplot(gs[-1, :])
 
         pockmarks_discharge = []
@@ -1138,11 +1155,12 @@ def plot_changes_and_examples(set, names, examples = ((0, 5), (1, 5), (4, 5), (5
 
         bar_colors = ['tab:green', 'tab:cyan', 'orchid']
 
-        X_axis = 2*np.arange(int(len(names)/3))
+        X_axis = 2 * np.arange(int(len(names) / 3))
 
-        ax_discharges.bar(X_axis-0.6, pockmarks_discharge[:3], 0.6, color=bar_colors, alpha=1, label='Summer Average')
+        ax_discharges.bar(X_axis - 0.6, pockmarks_discharge[:3], 0.6, color=bar_colors, alpha=1, label='Summer Average')
         ax_discharges.bar(X_axis, pockmarks_discharge[3:6], 0.6, color=bar_colors, alpha=0.75, label='Summer Minimum')
-        ax_discharges.bar(X_axis+0.6, pockmarks_discharge[6:], 0.6, color=bar_colors, alpha=0.5, label='Seawater Intrusion')
+        ax_discharges.bar(X_axis + 0.6, pockmarks_discharge[6:], 0.6, color=bar_colors, alpha=0.5,
+                          label='Seawater Intrusion')
 
         ax_discharges.set_xticks(X_axis)
         ax_discharges.set_xticklabels(['Present-day', '2070', '2130'])
@@ -1161,19 +1179,21 @@ def plot_changes_and_examples(set, names, examples = ((0, 5), (1, 5), (4, 5), (5
             if i > 0:
                 axs_pockmarks[i].set_yticklabels([])
                 axs_pockmarks[i].set_ylabel('')
-            axs_pockmarks[i].text(0.025, 0.975, f"{times[i]}", fontsize=6, transform=axs_pockmarks[i].transAxes, ha='left', va='top')
-            axs_pockmarks[i].text(0.975, 0.975, f"Average", fontsize=6, transform=axs_pockmarks[i].transAxes, ha='right', va='top')
+            axs_pockmarks[i].text(0.025, 0.975, f"{times[i]}", fontsize=6, transform=axs_pockmarks[i].transAxes,
+                                  ha='left', va='top')
+            axs_pockmarks[i].text(0.975, 0.975, f"Average", fontsize=6, transform=axs_pockmarks[i].transAxes,
+                                  ha='right', va='top')
 
         plt.savefig(f"/home/connor/PycharmProjects/pockmarks/figures/changes_and_examples_alternate_{set}.png", dpi=600)
 
+
 def plot_examples_alternative_hypothesis(plan=[('1average', 1), ('hk1average', 1), ('c1average', 1)],
                                          section=[('c1average', 5), ('c9slr2_swi', 5)]):
-
     f = plt.figure(figsize=(6, 5))
     gs = f.add_gridspec(2, 6, height_ratios=[1, 1.5], hspace=0.5, wspace=0.1)
     plt.rcParams.update({'font.size': 8})
-    axs_plan = [f.add_subplot(gs[0, int(2*i):int(2*i+2)]) for i in range(3)]
-    axs_section = [f.add_subplot(gs[1, int(3*i):int(3*i+3)]) for i in range(2)]
+    axs_plan = [f.add_subplot(gs[0, int(2 * i):int(2 * i + 2)]) for i in range(3)]
+    axs_section = [f.add_subplot(gs[1, int(3 * i):int(3 * i + 3)]) for i in range(2)]
 
     grid = discretization.get_grid_w_ibound()
     labels = ['Thin', 'Patchy', 'Conduits']
@@ -1196,19 +1216,23 @@ def plot_examples_alternative_hypothesis(plan=[('1average', 1), ('hk1average', 1
 
         axs_section[i].set_ylim(-35, -10)
 
-        axs_section[i].text(0.025, 0.975, f"Conduits", fontsize=6, transform=axs_section[i].transAxes, ha='left', va='top')
+        axs_section[i].text(0.025, 0.975, f"Conduits", fontsize=6, transform=axs_section[i].transAxes, ha='left',
+                            va='top')
         axs_section[i].text(0.975, 0.975, f"{labels[i]}", fontsize=6, transform=axs_section[i].transAxes,
-                         ha='right', va='top')
+                            ha='right', va='top')
 
     for ax in axs_section:
         ax.fill_between(ax.get_xlim(), ax.get_ylim()[0], ax.get_ylim()[1], color='white', alpha=1, zorder=-1)
 
-    plt.savefig(f"/home/connor/PycharmProjects/pockmarks/figures/examples_alternate_hypothesis_plan.png", dpi=600, transparent=True)
+    plt.savefig(f"/home/connor/PycharmProjects/pockmarks/figures/examples_alternate_hypothesis_plan.png", dpi=600,
+                transparent=True)
 
-def plot_salinity_comparison(names, colors=['tab:green', 'orchid', 'chocolate'], ax=None, errors_on_modelled_conduits=False, labels=None, legend=True):
+
+def plot_salinity_comparison(names, colors=['tab:green', 'orchid', 'chocolate'], ax=None,
+                             errors_on_modelled_conduits=False, labels=None, legend=True):
     if ax == None:
         f, ax = plt.subplots(1, 1, figsize=(2, 2))
-    savepath =  data_dir.joinpath("observations.csv")
+    savepath = data_dir.joinpath("observations.csv")
     data = pd.read_csv(savepath, index_col=0,
                        dtype={'name': str, 'concentration_average': float, 'discharge_min': float,
                               'discharge_max': float})
@@ -1220,16 +1244,17 @@ def plot_salinity_comparison(names, colors=['tab:green', 'orchid', 'chocolate'],
         modelled.index = data.index
         for measurement in ['mc2-1', 'mc2-2', 'mc2-3']:
             cent = modelled.loc[measurement, 'conc_center']
-            if not "Conduits" in label or errors_on_modelled_conduits :
-                xerr = [cent-[modelled.loc[measurement, 'conc_min']], [modelled.loc[measurement, 'conc_max']-cent]]
+            if not "Conduits" in label or errors_on_modelled_conduits:
+                xerr = [cent - [modelled.loc[measurement, 'conc_min']], [modelled.loc[measurement, 'conc_max'] - cent]]
             else:
                 xerr = None
             ax.errorbar([cent], [data.loc[measurement, 'concentration_average']],
                         xerr=xerr,
                         fmt=' ', marker='o', fillstyle=None,
-                        c=color,  markersize=4, zorder=4, capsize=2, linewidth=1, markerfacecolor='w', label=label if measurement == 'mc2-1' else None)
+                        c=color, markersize=4, zorder=4, capsize=2, linewidth=1, markerfacecolor='w',
+                        label=label if measurement == 'mc2-1' else None)
 
-    ax.plot(np.linspace(0,35), np.linspace(0,35), color='black', ls='--', lw=0.5)
+    ax.plot(np.linspace(0, 35), np.linspace(0, 35), color='black', ls='--', lw=0.5)
     ax.set_box_aspect(1)
 
     ax.text(0.85, 0.74, f"{'MC2-3'}", fontsize=6, transform=ax.transAxes, ha='left', va='center')
@@ -1241,11 +1266,13 @@ def plot_salinity_comparison(names, colors=['tab:green', 'orchid', 'chocolate'],
     if legend:
         ax.legend(fontsize=6)
 
-def plot_flux_comparison(names, colors=['tab:green', 'orchid', 'chocolate'], ax=None, errors_on_modelled_conduits=False, labels = None, legend=False):
+
+def plot_flux_comparison(names, colors=['tab:green', 'orchid', 'chocolate'], ax=None, errors_on_modelled_conduits=False,
+                         labels=None, legend=False):
     if ax == None:
         f, ax = plt.subplots(1, 1, figsize=(2, 2))
 
-    savepath =  data_dir.joinpath("observations.csv")
+    savepath = data_dir.joinpath("observations.csv")
     data = pd.read_csv(savepath, index_col=0,
                        dtype={'name': str, 'concentration_average': float, 'discharge_min': float,
                               'discharge_max': float})
@@ -1258,10 +1285,10 @@ def plot_flux_comparison(names, colors=['tab:green', 'orchid', 'chocolate'], ax=
         modelled.index = data.index
         for measurement in ['sv1', 'sv6']:
             xcent = modelled.loc[measurement, 'discharge_center']
-            ycent = (data.loc[measurement, 'discharge_min']+data.loc[measurement, 'discharge_max'])/2
+            ycent = (data.loc[measurement, 'discharge_min'] + data.loc[measurement, 'discharge_max']) / 2
             if (not "Conduits" in label) or errors_on_modelled_conduits:
                 xerr = [xcent - [modelled.loc[measurement, 'discharge_min']],
-                              [modelled.loc[measurement, 'discharge_max'] - xcent]]
+                        [modelled.loc[measurement, 'discharge_max'] - xcent]]
             else:
                 xerr = None
             yerr = [[ycent - data.loc[measurement, 'discharge_min']], [data.loc[measurement, 'discharge_max'] - ycent]]
@@ -1289,6 +1316,7 @@ def plot_flux_comparison(names, colors=['tab:green', 'orchid', 'chocolate'], ax=
 
     return ax
 
+
 def plot_dropping_head_fluxes(names, colors, labels, ax, pockmark=5):
     t_series = utils.get_pockmark_discharge_and_recharge(names[0])[f"{pockmark}"].index
 
@@ -1301,7 +1329,7 @@ def plot_dropping_head_fluxes(names, colors, labels, ax, pockmark=5):
     ax.set_ylabel(f'Pockmark {pockmark} Flux [m$^3$/day]')
     ax.set_xlabel(r'$h_{\mathrm{on}}$ [m]')
     ax.set_xticks([i for i in range(15)][::2])
-    ax.set_xticklabels([2.75-0.25*(i+1) for i in range(15)][::2])
+    ax.set_xticklabels([2.75 - 0.25 * (i + 1) for i in range(15)][::2])
     ax.set_box_aspect(1)
     discharge = Line2D([], [], color='grey', ls=':', label='Discharge')
     recharge = Line2D([], [], color='grey', label='Intrusion')
@@ -1310,15 +1338,15 @@ def plot_dropping_head_fluxes(names, colors, labels, ax, pockmark=5):
 
 def plot_alternate_hypotheses_pockmarks_and_model_vs_observed(names, salinity_number=3, discharge_number=0):
     f = plt.figure(figsize=(8, 6.5))
-    gs = f.add_gridspec(6, 3, width_ratios=[1,1,1.6], hspace=0.25, wspace=0.5)
+    gs = f.add_gridspec(6, 3, width_ratios=[1, 1, 1.6], hspace=0.25, wspace=0.5)
     plt.rcParams.update({'font.size': 8})
     ax_salinity = f.add_subplot(gs[:3, -1])
     ax_discharges = f.add_subplot(gs[3:, -1])
     axs_plan = []
     axs_section = []
     for i, name in enumerate(names):
-        axs_plan.append(f.add_subplot(gs[2*i:2*i+2, 0]))
-        axs_section.append(f.add_subplot(gs[2*i:2*i+2, 1]))
+        axs_plan.append(f.add_subplot(gs[2 * i:2 * i + 2, 0]))
+        axs_section.append(f.add_subplot(gs[2 * i:2 * i + 2, 1]))
 
     plot_salinity_comparison(names, ax=ax_salinity)
     ax_salinity.text(0.975, 1.025, f"(g)", fontsize=8, transform=ax_salinity.transAxes, ha='right', va='bottom')
@@ -1332,16 +1360,17 @@ def plot_alternate_hypotheses_pockmarks_and_model_vs_observed(names, salinity_nu
                       section_line=False, discharge_on_plan=False)
 
         # add marker at 60.5, -11
-        ax_section.scatter(60.5, -11+0.3, marker='^', color='blue', lw=0.75, s=15, facecolors='none')
+        ax_section.scatter(60.5, -11 + 0.3, marker='^', color='blue', lw=0.75, s=15, facecolors='none')
 
         plot_pockmark(name, salinity_number, grid, ax_plan=ax_plan, ax_section=None, vectors=False, contours=False,
                       section_line=False, discharge_on_plan=True)
 
-        ax_plan.scatter(1.758e6+298.5, 5.432e6+701.8-2, marker='v', color='darkgoldenrod', lw=0.75, s=15, facecolors='none')
-
+        ax_plan.scatter(1.758e6 + 298.5, 5.432e6 + 701.8 - 2, marker='v', color='darkgoldenrod', lw=0.75, s=15,
+                        facecolors='none')
 
         ax_plan.text(0.975, 1.025, f"({letter[0]})", fontsize=8, transform=ax_plan.transAxes, ha='right', va='bottom')
-        ax_section.text(0.975, 1.025, f"({letter[1]})", fontsize=8, transform=ax_section.transAxes, ha='right', va='bottom')
+        ax_section.text(0.975, 1.025, f"({letter[1]})", fontsize=8, transform=ax_section.transAxes, ha='right',
+                        va='bottom')
         if not name == names[-1]:
             ax_plan.set_xticklabels([])
             ax_plan.set_xlabel('')
@@ -1350,22 +1379,29 @@ def plot_alternate_hypotheses_pockmarks_and_model_vs_observed(names, salinity_nu
 
     labels = ['Thin', 'Patchy', 'Conduits']
     for i in range(len(axs_plan)):
-        axs_plan[i].text(0.975, 0.975, f"{labels[i]}", fontsize=6, transform=axs_plan[i].transAxes, ha='right', va='top')
-        axs_section[i].text(0.975, 0.975, f"{labels[i]}", fontsize=6, transform=axs_section[i].transAxes, ha='right', va='top')
+        axs_plan[i].text(0.975, 0.975, f"{labels[i]}", fontsize=6, transform=axs_plan[i].transAxes, ha='right',
+                         va='top')
+        axs_section[i].text(0.975, 0.975, f"{labels[i]}", fontsize=6, transform=axs_section[i].transAxes, ha='right',
+                            va='top')
 
-
-        axs_section[i].text(0.025, 0.975, f"Pockmark 1", fontsize=6, transform=axs_section[i].transAxes, ha='left', va='top')
+        axs_section[i].text(0.025, 0.975, f"Pockmark 1", fontsize=6, transform=axs_section[i].transAxes, ha='left',
+                            va='top')
         axs_plan[i].text(0.025, 0.975, f"Pockmark 4", fontsize=6, transform=axs_plan[i].transAxes, ha='left', va='top')
 
     legend_elements = []
-    legend_elements.append(Line2D([0], [0], marker='^', color='w', label='SV1', markerfacecolor='none', markeredgecolor='blue', markersize=4, lw=0.5))
-    legend_elements.append(Line2D([0], [0], marker='v', color='w', label='MC2-1', markerfacecolor='none', markeredgecolor='darkgoldenrod', markersize=4, lw=0.5))
+    legend_elements.append(
+        Line2D([0], [0], marker='^', color='w', label='SV1', markerfacecolor='none', markeredgecolor='blue',
+               markersize=4, lw=0.5))
+    legend_elements.append(
+        Line2D([0], [0], marker='v', color='w', label='MC2-1', markerfacecolor='none', markeredgecolor='darkgoldenrod',
+               markersize=4, lw=0.5))
     axs_plan[0].legend(handles=legend_elements, bbox_to_anchor=(0, 1.15, 1, 0.2), loc="lower left", ncol=2, fontsize=6)
 
     plt.tight_layout()
     savepath = unbacked_dir.joinpath("figures/alternate_hypotheses_pockmarks_and_model_vs_observed.png")
     plt.savefig(savepath, dpi=600)
     # plt.show()
+
 
 def plot_alternative_hypotheses_changes(names=None, pockmark_number=5, dropping_names=None):
     if names == None:
@@ -1379,10 +1415,9 @@ def plot_alternative_hypotheses_changes(names=None, pockmark_number=5, dropping_
     else:
         dropping_names = ['dropping', 'hkdropping', 'cdropping']
 
-
     f = plt.figure(figsize=(8, 5))
     plt.rcParams.update({'font.size': 8})
-    gs = gridspec.GridSpec(1, 2,  width_ratios=[1, 0.4], figure=f)
+    gs = gridspec.GridSpec(1, 2, width_ratios=[1, 0.4], figure=f)
     gs_sections = gridspec.GridSpecFromSubplotSpec(3, 3, subplot_spec=gs[0], hspace=0.2, wspace=0.25)
     gs_results = gridspec.GridSpecFromSubplotSpec(2, 1, subplot_spec=gs[1])
 
@@ -1409,11 +1444,11 @@ def plot_alternative_hypotheses_changes(names=None, pockmark_number=5, dropping_
         if not i == 7:
             ax.set_xlabel('')
 
-        ax.text(0.025, 0.975, f"{concepts[i//3]}", fontsize=6, transform=ax.transAxes, ha='left', va='top')
-        ax.text(0.975, 0.975, f"{scenarios[i%3]}", fontsize=6, transform=ax.transAxes, ha='right', va='top')
+        ax.text(0.025, 0.975, f"{concepts[i // 3]}", fontsize=6, transform=ax.transAxes, ha='left', va='top')
+        ax.text(0.975, 0.975, f"{scenarios[i % 3]}", fontsize=6, transform=ax.transAxes, ha='right', va='top')
         ax.text(0.975, 1.025, f"({letters[i]})", fontsize=8, transform=ax.transAxes, ha='right', va='bottom')
     X_axis = np.arange(2)
-    for hypoth, offset, color in zip(np.array(names)[:, [0,-1]], [-0.2, 0, 0.2], ['tab:green', 'orchid', 'chocolate']):
+    for hypoth, offset, color in zip(np.array(names)[:, [0, -1]], [-0.2, 0, 0.2], ['tab:green', 'orchid', 'chocolate']):
         pockmarks_discharge = []
         for scena in hypoth:
             temp_pockmarks = utils.get_final_pockmark_results(scena)
@@ -1435,7 +1470,8 @@ def plot_alternative_hypotheses_changes(names=None, pockmark_number=5, dropping_
     axs_results[1].set_ylim(0, 100)
 
     if dropping_names != None:
-        plot_dropping_head_fluxes(dropping_names, ["tab:green", "orchid", "chocolate"], ["Thin", "Patchy", "Conduit"], axs_results[0])
+        plot_dropping_head_fluxes(dropping_names, ["tab:green", "orchid", "chocolate"], ["Thin", "Patchy", "Conduit"],
+                                  axs_results[0])
         axs_results[0].text(0.975, 1.025, f"(j)", fontsize=8, transform=axs_results[0].transAxes, ha='right',
                             va='bottom')
         axs_results[1].text(0.975, 1.025, f"(k)", fontsize=8, transform=axs_results[1].transAxes, ha='right',
@@ -1446,10 +1482,11 @@ def plot_alternative_hypotheses_changes(names=None, pockmark_number=5, dropping_
         axs_results[0].set_axis_off()
         lines = Line2D([], [], linewidth=0.5, color='red', linestyle='dashed', label="5% salinity")
         axs_results[0].legend(handles=[lines], loc='center left', fontsize=6)
-        
+
     plt.tight_layout()
     plt.savefig(f"/home/connor/PycharmProjects/pockmarks/figures/alternate_hypotheses_changes.png", dpi=600)
     plt.show()
+
 
 def plot_conduit_and_patches_locations():
     f, ax = plt.subplots(figsize=(5, 4))
@@ -1466,12 +1503,14 @@ def plot_conduit_and_patches_locations():
     patches.to_crs('EPSG:2193')
     patches.plot(ax=ax, edgecolors='black', color="orchid", zorder=10, alpha=1, lw=0.75, label="Patches")
     points = np.genfromtxt("/home/connor/PycharmProjects/pockmarks/data/coordinates_from_harding_appendix.csv",
-                           delimiter=',', skip_header=1)[:,1:]
-    arbitrary = gpd.read_file('/home/connor/PycharmProjects/pockmarks/data/abritrary_pockmark_locations.shp', crs='EPSG:2193')
+                           delimiter=',', skip_header=1)[:, 1:]
+    arbitrary = gpd.read_file('/home/connor/PycharmProjects/pockmarks/data/abritrary_pockmark_locations.shp',
+                              crs='EPSG:2193')
     arbitrary.to_crs('EPSG:2193')
     # drop first point from abritray
     arbitrary = arbitrary.iloc[1:]
-    arbitrary.plot(ax=ax, edgecolors='black', color="chocolate", zorder=12, alpha=1, lw=0.75, markersize=15, label="Conduits")
+    arbitrary.plot(ax=ax, edgecolors='black', color="chocolate", zorder=12, alpha=1, lw=0.75, markersize=15,
+                   label="Conduits")
 
     transformer = Transformer.from_crs("EPSG:4326", "EPSG:2193")
 
@@ -1486,7 +1525,7 @@ def plot_conduit_and_patches_locations():
     for i, pockmark in enumerate(patches.geometry):
         if numbers[i] is None:
             continue
-        elif label_sides[numbers[i]-1] == 'left':
+        elif label_sides[numbers[i] - 1] == 'left':
             ax.text(pockmark.bounds[0] - 40, pockmark.centroid.y, numbers[i], fontsize=6, ha='right', va='center')
         else:
             ax.text(pockmark.bounds[2] + 40, pockmark.centroid.y, numbers[i], fontsize=6, ha='left', va='center')
@@ -1510,24 +1549,31 @@ def plot_conduit_and_patches_locations():
 
     plt.savefig(savedir.joinpath("conduit_and_patches_locations.png"), dpi=600)
 
+
 def plot_multi_model_comparison():
     f, axs = plt.subplots(1, 2, figsize=(7, 3.5))
     plt.rcParams.update({'font.size': 8})
     plot_salinity_comparison(['1average', 'hk1ave_new', 'c1ave_new', 'hhhk_average'],
                              colors=['tab:green', 'orchid', 'chocolate', 'purple'],
-                             labels=[r'Thin ($K_v = 1.8 \times 10^{-5}$ m/day)', r'Patchy ($K_v = 3.6 \times 10^{-5}$ m/day)', 'Conduits (K_v = 10 m/day)', r'Patchy ($K_v = 1.8 \times 10^{-3}$ m/day)'],
-                            ax=axs[0], legend=False)
+                             labels=[r'Thin ($K_v = 1.8 \times 10^{-5}$ m/day)',
+                                     r'Patchy ($K_v = 3.6 \times 10^{-5}$ m/day)', 'Conduits (K_v = 10 m/day)',
+                                     r'Patchy ($K_v = 1.8 \times 10^{-3}$ m/day)'],
+                             ax=axs[0], legend=False)
     plot_flux_comparison(['1average', 'hk1ave_new', 'c1ave_new', 'hhhk_average'],
-                             colors=['tab:green', 'orchid', 'chocolate', 'purple'],
-                             labels=[r'Thin ($K_v = 1.8 \times 10^{-5}$ m/day)', r'Patchy ($K_v = 3.6 \times 10^{-5}$ m/day)', 'Conduits ($K_v = 10$ m/day)', r'Patchy ($K_v = 1.8 \times 10^{-3}$ m/day)'],
+                         colors=['tab:green', 'orchid', 'chocolate', 'purple'],
+                         labels=[r'Thin ($K_v = 1.8 \times 10^{-5}$ m/day)',
+                                 r'Patchy ($K_v = 3.6 \times 10^{-5}$ m/day)', 'Conduits ($K_v = 10$ m/day)',
+                                 r'Patchy ($K_v = 1.8 \times 10^{-3}$ m/day)'],
                          ax=axs[1], legend=True)
     plt.tight_layout()
     plt.savefig(f"/home/connor/PycharmProjects/pockmarks/figures/multi_model_comparison_2.png", dpi=600)
 
+
 def plot_longer_swi(models=None, names=None):
     if models == None:
-        models = ['bl1_swi', 'hkbl1_swi_n', 'cbl1_swi_n',"hhhkbl1_swi_n"]
-        names = [f'Thin {r'($K_v = 1.8 \times 10^{-5}$ m/day)'}', r'Patchy ($K_v = 3.6 \times 10^{-5}$ m/day)', 'Conduits ($K_v = 10$ m/day)', r'Patchy ($K_v = 1.8 \times 10^{-3}$ m/day)']
+        models = ['bl1_swi', 'hkbl1_swi_n', 'cbl1_swi_n', "hhhkbl1_swi_n"]
+        names = [f'Thin {r'($K_v = 1.8 \times 10^{-5}$ m/day)'}', r'Patchy ($K_v = 3.6 \times 10^{-5}$ m/day)',
+                 'Conduits ($K_v = 10$ m/day)', r'Patchy ($K_v = 1.8 \times 10^{-3}$ m/day)']
     f, axs = plt.subplots(1, 4, figsize=(7.5, 2.5))
     plt.rcParams.update({'font.size': 8})
     grid = discretization.get_grid_w_ibound()
@@ -1550,8 +1596,8 @@ def plot_longer_swi(models=None, names=None):
     plt.tight_layout()
     plt.savefig(f"/home/connor/PycharmProjects/pockmarks/figures/longer_swi.png", dpi=600)
 
-def plot_tidal_effects_on_salinity_and_discharge_at_measumement_points(scenario_name='tidal'):
 
+def plot_tidal_effects_on_salinity_and_discharge_at_measumement_points(scenario_name='tidal'):
     f, axs = plt.subplots(1, 2, figsize=(7, 3.5))
     plt.rcParams.update({'font.size': 8})
 
@@ -1586,6 +1632,7 @@ def plot_tidal_effects_on_salinity_and_discharge_at_measumement_points(scenario_
     plt.savefig(savepath, dpi=600)
     plt.show()
 
+
 def compare_salinity_at_measurement_points_dispersion():
     f, axs = plt.subplots(3, 2, figsize=(6, 8), sharex='col')
     plt.rcParams.update({'font.size': 8})
@@ -1593,23 +1640,24 @@ def compare_salinity_at_measurement_points_dispersion():
     labels = [r'alpha_L = 0', 'alpha_L = 10']
     label_suffixes = ['Thin', 'Patchy', 'Conduits']
 
-
     for i, name in enumerate(names):
         use_labels = [label + f" ({label_suffixes[i]})" for label in labels]
-        plot_salinity_comparison(name, ax=axs[i, 0], errors_on_modelled_conduits=False, labels=use_labels, legend=True, colors=['tab:blue', 'tab:orange'])
-        plot_flux_comparison(name, ax=axs[i, 1], errors_on_modelled_conduits=False, labels=use_labels, legend=False, colors=['tab:blue', 'tab:orange'])
+        plot_salinity_comparison(name, ax=axs[i, 0], errors_on_modelled_conduits=False, labels=use_labels, legend=True,
+                                 colors=['tab:blue', 'tab:orange'])
+        plot_flux_comparison(name, ax=axs[i, 1], errors_on_modelled_conduits=False, labels=use_labels, legend=False,
+                             colors=['tab:blue', 'tab:orange'])
         # plot (a, b) labels
-        axs[i, 0].text(0.975, 1.025, f"({chr(97+2*i)})", fontsize=8, transform=axs[i, 0].transAxes, ha='right', va='bottom')
-        axs[i, 1].text(0.975, 1.025, f"({chr(98+2*i)})", fontsize=8, transform=axs[i, 1].transAxes, ha='right', va='bottom')
+        axs[i, 0].text(0.975, 1.025, f"({chr(97 + 2 * i)})", fontsize=8, transform=axs[i, 0].transAxes, ha='right',
+                       va='bottom')
+        axs[i, 1].text(0.975, 1.025, f"({chr(98 + 2 * i)})", fontsize=8, transform=axs[i, 1].transAxes, ha='right',
+                       va='bottom')
 
     plt.tight_layout()
 
     plt.savefig(unbacked_dir.joinpath('figures', 'compare_salinity_at_measurement_points_dispersion.png'), dpi=600)
 
 
-
-
-if __name__=="__main__":
+if __name__ == "__main__":
     # names = ['1average', '2slr1', '3slr2', '4minimum', '5slr1_min', '6slr2_min', '7swi', '8slr1_swi', '9slr2_swi']
     # examples  = ((0, 5), (1, 5), (2, 5))
     # plot_changes_and_examples("base", names=names, examples=examples, version=1)
@@ -1619,9 +1667,9 @@ if __name__=="__main__":
     # plot_alternate_hypotheses_pockmarks_and_model_vs_observed(['1average'], 1)
     # plot_alternative_hypotheses_changes(pockmark_number=5, dropping_names=False)
     # plot_conduit_and_patches_locations()
-   # plot_multi_model_comparison()
-    # plot_longer_swi()
-    # plot_conduit_and_patches_locations()
-    # plot_boundary_conditions()
-    # plot_tidal_effects_on_salinity_and_discharge_at_measumement_points("tidal_all_b")
+# plot_multi_model_comparison()
+# plot_longer_swi()
+# plot_conduit_and_patches_locations()
+# plot_boundary_conditions()
+# plot_tidal_effects_on_salinity_and_discharge_at_measumement_points("tidal_all_b")
 
