@@ -112,14 +112,14 @@ Average salinity outside [PSU] & 29.4 & 29.7 & 29.4 & 29.4 & 28.7 & 28.1 \\
 
 \begin{figure}[h!]
 \centering
-\makebox[\textwidth][c]{\includegraphics[width=1.1\textwidth]{hk1ave_new_pockmark_salinity.png}}
+\makebox[\textwidth][c]{\includegraphics[width=1.1\textwidth]{hk1ave_r1_pockmark_salinity.png}}
 \caption{Modeled salinity distributions and discharge at six pockmarks for the present-day using the Patchy Aquitard model.}
 \label{fig_pockmarks_present_day}
 \end{figure}
 
 \begin{figure}[h!]
 \centering
-\makebox[\textwidth][c]{\includegraphics[width=1.1\textwidth]{c1ave_new_pockmark_salinity.png}}
+\makebox[\textwidth][c]{\includegraphics[width=1.1\textwidth]{c1ave_r1_pockmark_salinity.png}}
 \caption{Modeled salinity distributions and discharge at six pockmarks for the present-day using the Aquitard Conduits model.}
 \label{fig_pockmarks_present_day}
 \end{figure}
@@ -149,7 +149,12 @@ The head at the seafloor boundary was varied around the mean level of -0.14 m wi
 
 \subsection{Steady-state Scenario for the Thin Aquitard Model Including the effects of dispersion}
 
-\noindent To explore the effects of dispersion on the salinity and flux at the observation points, three additional models were run. These were the steady-state scenarios for each of the three conceptual models of pockmark structure. The longitudinal dispersion ($\alpha_L$) was set to 10 m, the transverse dispersion ($\alpha_T$) was set to 1 m, and the vertical dispersion ($\alpha_V$) was set to 0.1 m (\cite{zech_is_2015}). All other parameters were kept the same as the original model, where $\alpha_L, \alpha_T, \alpha_V = 0$ m.
+\noindent To explore the effects of dispersion on the salinity and flux at the observation points, three additional models were run.
+These were the steady-state scenarios for each of the three conceptual models of pockmark structure.
+The longitudinal dispersion ($\alpha_L$) was set to 10 m, the transverse dispersion ($\alpha_T$) was set to 1 m, and the vertical dispersion ($\alpha_V$) was set to 0.1 m (\cite{zech_is_2015}).
+All other parameters were kept the same as the original model, where $\alpha_L, \alpha_T, \alpha_V = 0$ m.
+Note that the conduits scenario run for this analysis featured a pockmark conduit $K$ of 10 m/day, rather than the 1 m/day used in the main text.
+
 
 \begin{figure}[h!]
 \centering
@@ -160,12 +165,16 @@ The head at the seafloor boundary was varied around the mean level of -0.14 m wi
 
 \\
 
-\noindent For the models with dispersion, salinity at the observation points was higher than for the models without dispersion (Figure 6a,c,e). This difference was greatest for observation MC2-2, and was generally larger for the Patchy Aquitard (around 5 PSU to 10 PSU, see Figure 6b) and Aquitard Conduits (around 3 PSU to 6 PSU, see Figure 6f) models than for the Thin Aquitard Model (around 2 PSU to 5 PSU, see Figure 6a). For all three conceptual models, dispersion had no effect on the modelled flux at the observation points (Figure 6b,d,f).\\
+\noindent For the models with dispersion, salinity at the observation points was higher than for the models without dispersion (Figure 6a,c,e).
+This difference was greatest for observation MC2-2, and was generally larger for the Patchy Aquitard (around 5 PSU to 10 PSU, see Figure 6b) and Aquitard Conduits (around 3 PSU to 6 PSU, see Figure 6f) models than for the Thin Aquitard Model (around 2 PSU to 5 PSU, see Figure 6a). For all three conceptual models, dispersion had no effect on the modelled flux at the observation points (Figure 6b,d,f).\\
 
 \noindent Given the known effects of upstream dispersion (\cite{ irvine_upstream_2021}), this increase in salinity could be caused by back dispersion from the boundary condition, or lateral dispersion from areas around the measurement point with higher salinity.
 
 \subsection{Additional scenarios}
-To understand the influence of the hydraulic conductivity of the pockmarks in the Patchy Aquitard model, an extra model was run where the vertical hydraulic conductivity in the patches was increased by a factor of 100 to $1.8 \times 10^{-3}$ m/day. For the Present-day scenario, this additional model showed good agreement with the low salinity observed at MC2-2 (Supporting Figure 4).
+To understand the influence of the hydraulic conductivity of the pockmarks in the Patchy Aquitard model,
+an extra model was run where the vertical hydraulic conductivity in the patches was increased by a factor of 100 to $1.8 \times 10^{-3}$ m/day.
+Additionally, the Aquitard Conduits model was run with a pockmark conduit hydraulic conductivity of 10 m/day, rather than 1 m/day as in the main text.
+For the Present-day scenario, this additional model showed good agreement with the low salinity observed at MC2-2 (Supporting Figure 4).
 \\
 
 \begin{figure}[h!]
@@ -177,10 +186,14 @@ To understand the influence of the hydraulic conductivity of the pockmarks in th
 
 \\
 
-\noindent For this additional Patchy aquitard model, and the models presented in the main text, an additional Aquifer Depletion scenario was run. This scenario has the same conditions as the original Aquifer Depletion scenario (Main text, Table 1), but was run for a longer period of 10 years. In this scenario, more salinization occurred in the Aquitard Conduits model, and a small amount of salinization occurred in the Patchy Aquitard model with the higher hydraulic conductivity increase ($K_v = 1.8 \times 10^{-3}$ m/day). 
+\noindent For this additional Patchy aquitard model, and the models presented in the main text, an additional Aquifer Depletion scenario was run.
+This scenario has the same conditions as the original Aquifer Depletion scenario (Main text, Table 1), but was run for a longer period of 10 years.
+In this scenario, more salinization occurred in the Aquitard Conduits model, and a small amount of salinization occurred in the Patchy Aquitard model with the higher hydraulic conductivity increase ($K_v = 1.8 \times 10^{-3}$ m/day).
 \\
 
-\noindent For the Patchy Aquitard model with only a small increase in hydraulic conductivity ($K_v = 3.6 \times 10^{-5}$ m/day), the 5 \% salinity contour is higher in the aquitard when compared to the Thin Aquitard model, suggesting that less seawater intrusion is occurring. This reflects the fact that at steady-state, there is more upward flux in the Patchy Aquitard model and therefore less diffusion down into the aquifer compared with the Thin Aquitard model (Main text, Figure 7b,d). While the flux downward through the pockmarks is greater for the Patchy Aquitard model, the steady-state conditions mean that even after 10 years of seawater intrusion, the aquitard is still fresher compared with the lower hydraulic conductivity Thin Aquitard model (Supporting Figure 5). 
+\noindent For the Patchy Aquitard model with only a small increase in hydraulic conductivity ($K_v = 3.6 \times 10^{-5}$ m/day), the 5 \% salinity contour is higher in the aquitard when compared to the Thin Aquitard model, suggesting that less seawater intrusion is occurring.
+This reflects the fact that at steady-state, there is more upward flux in the Patchy Aquitard model and therefore less diffusion down into the aquifer compared with the Thin Aquitard model (Main text, Figure 7b,d).
+While the flux downward through the pockmarks is greater for the Patchy Aquitard model, the steady-state conditions mean that even after 10 years of seawater intrusion, the aquitard is still fresher compared with the lower hydraulic conductivity Thin Aquitard model (Supporting Figure 5).
 
 \begin{figure}[h!]
 \centering

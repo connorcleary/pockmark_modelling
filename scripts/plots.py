@@ -669,8 +669,10 @@ def plot_pockmark(name, i, grid, ax_plan=None, ax_section=None, label_sections=F
                   ylim=None, vectors=True, contours=False, section_line=True, discharge_on_plan=False):
 
     data = utils.get_final_results(name)
-    pockmark = gpd.read_file('/home/connor/PycharmProjects/pockmarks/data/pockmarks6_new.shp', crs='EPSG:2193')['geometry'][i]
-    section = gpd.read_file('/home/connor/PycharmProjects/pockmarks/data/pockmark_sections.shp')['geometry'][i]
+    savepath = data_dir.joinpath("pockmarks6_new.shp")
+    pockmark = gpd.read_file(savepath, crs='EPSG:2193')['geometry'][i]
+    savepath = data_dir.joinpath("pockmark_sections.shp")
+    section = gpd.read_file(savepath)['geometry'][i]
     colors = ['tab:red', 'tab:orange', 'tab:brown', 'tab:purple', 'tab:blue', 'tab:pink']
     color = colors[i]
 
@@ -1206,8 +1208,8 @@ def plot_examples_alternative_hypothesis(plan=[('1average', 1), ('hk1average', 1
 def plot_salinity_comparison(names, colors=['tab:green', 'orchid', 'chocolate'], ax=None, errors_on_modelled_conduits=False, labels=None, legend=True):
     if ax == None:
         f, ax = plt.subplots(1, 1, figsize=(2, 2))
-
-    data = pd.read_csv("/home/connor/PycharmProjects/pockmarks/data/observations.csv", index_col=0,
+    savepath =  data_dir.joinpath("observations.csv")
+    data = pd.read_csv(savepath, index_col=0,
                        dtype={'name': str, 'concentration_average': float, 'discharge_min': float,
                               'discharge_max': float})
     if labels == None:
@@ -1243,7 +1245,8 @@ def plot_flux_comparison(names, colors=['tab:green', 'orchid', 'chocolate'], ax=
     if ax == None:
         f, ax = plt.subplots(1, 1, figsize=(2, 2))
 
-    data = pd.read_csv("/home/connor/PycharmProjects/pockmarks/data/observations.csv", index_col=0,
+    savepath =  data_dir.joinpath("observations.csv")
+    data = pd.read_csv(savepath, index_col=0,
                        dtype={'name': str, 'concentration_average': float, 'discharge_min': float,
                               'discharge_max': float})
 
@@ -1360,7 +1363,8 @@ def plot_alternate_hypotheses_pockmarks_and_model_vs_observed(names, salinity_nu
     axs_plan[0].legend(handles=legend_elements, bbox_to_anchor=(0, 1.15, 1, 0.2), loc="lower left", ncol=2, fontsize=6)
 
     plt.tight_layout()
-    plt.savefig(f"/home/connor/PycharmProjects/pockmarks/figures/alternate_hypotheses_pockmarks_and_model_vs_observed.png", dpi=600)
+    savepath = unbacked_dir.joinpath("figures/alternate_hypotheses_pockmarks_and_model_vs_observed.png")
+    plt.savefig(savepath, dpi=600)
     # plt.show()
 
 def plot_alternative_hypotheses_changes(names=None, pockmark_number=5, dropping_names=None):
@@ -1611,10 +1615,10 @@ if __name__=="__main__":
     # plot_changes_and_examples("base", names=names, examples=examples, version=1)
     # plot_examples_alternative_hypothesis()
     # plot_aquitard_thickness()
-    # plot_alternate_hypotheses_pockmarks_and_model_vs_observed(['1average', 'hk1ave_new', 'c1ave_new'])
+    plot_alternate_hypotheses_pockmarks_and_model_vs_observed(['1ave_r1', 'hk1ave_r1', 'c1ave_r1'])
     # plot_alternate_hypotheses_pockmarks_and_model_vs_observed(['1average'], 1)
     # plot_alternative_hypotheses_changes(pockmark_number=5, dropping_names=False)
-    plot_conduit_and_patches_locations()
+    # plot_conduit_and_patches_locations()
    # plot_multi_model_comparison()
     # plot_longer_swi()
     # plot_conduit_and_patches_locations()

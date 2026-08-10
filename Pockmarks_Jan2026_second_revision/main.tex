@@ -231,7 +231,12 @@ The seafloor boundary is set in all seafloor cells (Figure \ref{fig:pockmarks_gr
 \subsection{Scenarios}\label{scenarios}
 The rates of submarine groundwater discharge at the pockmarks and the salinity of the groundwater below the pockmarks are analyzed for three scenarios of the numerical model (Table \ref{tab:table_stages}). The first scenario is the present-day average summer groundwater conditions, the second scenario is the estimated groundwater conditions in 2130, and the third scenario simulates aquifer depletion. 
 
-The present-day scenario corresponds to when \citeA{hoffmann_fresh_2023} took observations of porewater salinity in sediment cores and water column salinity.  The future scenario reflects the predicted average summer groundwater conditions in 2130 from the HAM5 regional model. \add[cl]{The HAM5 regional model simulated groundwater heads in the aquifer system in 2130 under a relative rise in sea-level that includes the effects of vertical land movement, based on the Shared Socioeconomic Pathways scenario SSP5-8.5} \cite{bennett_hutt_2024}.  \add[cl]{Also included in HAM5 are the expected changes to the Hutt River and its connection to the groundwater system due to a planned river engineering project. The outputs of HAM5 used to inform the model presented here are the heads at the two monitoring wells shown in Figure} \ref{fig:pockmarks_wellington_map}, \add[cl]{which are located in the Waiwhetū aquifer.}
+The present-day scenario corresponds to when \citeA{hoffmann_fresh_2023} took observations of porewater salinity in sediment cores and water column salinity.
+The future scenario reflects the predicted average summer groundwater conditions in 2130 from the HAM5 regional model.
+\add[cl]{The HAM5 regional model simulated groundwater heads in the aquifer system in 2130 under a relative rise in sea-level that includes the effects of vertical land movement, based on the Shared Socioeconomic Pathways scenario SSP5-8.5} \cite{bennett_hutt_2024}.
+\add[cl]{Also included in HAM5 are the expected changes to the Hutt River and its connection to the groundwater system due to a planned river engineering project.
+The outputs of HAM5 used to inform the model presented here are the heads at the two monitoring wells shown in Figure} \ref{fig:pockmarks_wellington_map},
+\add[cl]{which are located in the Waiwhetū aquifer.}
 
 The aquifer depletion scenario simulates an extreme case of onshore head reduction.
 The onshore head in this scenario is around 2.75 m below the current head limit for aquifer management and protection, and is unlikely to occur in reality.
@@ -248,26 +253,36 @@ However, in this numerical study, it allows for the simulation of hypothetical s
 \hline
 1 & Present-day & Fresh & $1\times 10^{6}$& $-0.14$  & $2.76$ & $2.64$\\
 2 & Sea-level Rise (2130) & 1 & $3.8\times 10^{4}$ & $1.45$  & $2.95$ & $2.88$\\ 
-3 & Aquifer Depletion & 1 & $30$& $-0.14$  & $-1$ & $-0.96$\\
+3 & Aquifer Depletion & 1 & $365$& $-0.14$  & $-1$ & $-0.96$\\
 \hline
 \end{tabular}
 \label{tab:table_stages}
 \end{table}
 
-The length of the Present-day scenario, 1$\times10^6$ days, \add[cl]{was chosen to allow the model to converge on steady-state conditions}. \add[cl]{This was found by running the model until no changes in head or salinity were detected}. The value for $h_{\mathrm{sea}}$ reflects the elevation of present-day sea level in the New Zealand Vertical Datum (NZVD). The value for $h_{\mathrm{on}}$ is based on the modeled average summer groundwater level at the McEwan Park monitoring well from HAM5, which is located at the onshore boundary (Figure 2). The value for $h_{\mathrm{off}}$ is based on the modeled hydraulic gradient between the McEwan Park and Somes Island monitoring wells in HAM5. \add[cl]{The initial salinity for the Present-day scenario is that of fresh water (0 PSU)}.
+The length of the Present-day scenario, 1$\times10^6$ days, \add[cl]{was chosen to allow the model to converge on steady-state conditions}.
+\add[cl]{This was found by running the model until no changes in head or salinity were detected}.
+The value for $h_{\mathrm{sea}}$ reflects the elevation of present-day sea level in the New Zealand Vertical Datum (NZVD).
+The value for $h_{\mathrm{on}}$ is based on the modeled average summer groundwater level at the McEwan Park monitoring well from HAM5, which is located at the onshore boundary (Figure 2).
+The value for $h_{\mathrm{off}}$ is based on the modeled hydraulic gradient between the McEwan Park and Somes Island monitoring wells in HAM5.
+\add[cl]{The initial salinity for the Present-day scenario is that of fresh water (0 PSU)}.
 
 The length of the Sea-level Rise (2130) scenario represents a 105-year period.
 \add[cl]{The initial conditions for this scenario are taken from the steady-state conditions at the end of the Present-day scenario.
 At the end of these 105 years, the model may not have reached a new steady-state, and head and salinity distributions may still be equilibrating with the updated forcing conditions} \cite{lu_timescales_2013}.
-The value for $h_{\mathrm{sea}}$ reflects the predicted sea level elevation in NZVD, based on the Shared Socioeconomic Pathways scenario SSP5-8.5 \cite{nzsearise_takiwa_2023}. The value for $h_{\mathrm{on}}$ is based on the modeled average summer groundwater level at McEwan Park under this sea-level rise scenario from HAM5 \cite{bennett_hutt_2024}. The value for $h_{\mathrm{off}}$ is based on the modeled hydraulic gradient between the McEwan Park and Somes Island monitoring wells, again based on this sea-level rise scenario. 
+The value for $h_{\mathrm{sea}}$ reflects the predicted sea level elevation in NZVD, based on the Shared Socioeconomic Pathways scenario SSP5-8.5 \cite{nzsearise_takiwa_2023}.
+The value for $h_{\mathrm{on}}$ is based on the modeled average summer groundwater level at McEwan Park under this sea-level rise scenario from HAM5 \cite{bennett_hutt_2024}.
+The value for $h_{\mathrm{off}}$ is based on the modeled hydraulic gradient between the McEwan Park and Somes Island monitoring wells, again based on this sea-level rise scenario.
 
-The length of the Aquifer Depletion scenario reflects a possible situation where a significant decline in heads occurs during a dry summer period \cite{gyopari_lower_2014}. \add[cl]{Again, the initial conditions for this scenario are taken from the Present-day scenario}. The value for $h_{\mathrm{on}}$ was chosen to force seawater intrusion to occur. The value for $h_{\mathrm{off}}$ is based on the modeled hydraulic gradient between the McEwan Park and Somes Island monitoring wells, based on the modeled response of the aquifer to depletion \cite{gyopari_lower_2014}. Note that in this scenario, groundwater flows landward, rather than seaward, like in the previous scenarios.
+The length of the Aquifer Depletion scenario reflects a possible situation where low aquifer heads are maintained for an extended period of one year \cite{gyopari_lower_2014}.
+\add[cl]{Again, the initial conditions for this scenario are taken from the Present-day scenario}.
+The value for $h_{\mathrm{on}}$ was chosen to force seawater intrusion to occur.
+The value for $h_{\mathrm{off}}$ is based on the modeled hydraulic gradient between the McEwan Park and Somes Island monitoring wells, based on the modeled response of the aquifer to depletion \cite{gyopari_lower_2014}.
+Note that in this scenario, groundwater flows landward, rather than seaward, like in the previous scenarios.
 
 \add[]{This scenario is intended as a bounding case that forces flow reversal at the pockmarks, rather than as a forecast of expected conditions.
 A head reduction of this magnitude is larger than that permitted under current aquifer management, which maintains a seaward gradient at the shoreline monitoring wells} \cite{gyopari_lower_2014}, and would require abstraction well beyond present rates.
 \add[]{We chose a deliberately severe reduction so that the potential for preferential intrusion through the pockmarks could be examined under the conditions where it is most likely to occur.
 A shorter or milder depletion would produce correspondingly less intrusion.
-The 30-day duration reflects a plausible dry-summer episode.
 A longer period of reversed gradient would allow saline groundwater to penetrate further, as explored for a sustained reversal in the Supporting Information in order to provide insight for other locations where long-term aquifer drawdown is more likely.}
 
 \subsection{Comparison of modeled flux and salinity to observations}
@@ -309,7 +324,11 @@ Expressed per unit area, across the entire model domain, the specific discharge 
 Within the pockmarks, the discharge distribution into the seafloor depends on the bathymetry. In pockmarks with flatter bases, discharge is focused around the edges of the pockmark (see Pockmarks 2 and 3 in Figure \ref{fig_pockmarks_present_day}). In contrast, in Pockmark 6, which is the deepest and contains an area that is more steeply depressed, discharge is focused at the center. Discharge rates for each pockmark vary between 0.03 m$^3$/day to 0.16 m$^3$/day. Discharge is higher for deeper pockmarks and those with greater areas. The average salinity of groundwater being discharged at each pockmark varies between 22.5 and 28.6 PSU. Lower salinity discharge occurs at deeper pockmarks such as Pockmarks 2 and 6, where the thickness of the Petone Marine Distal aquitard is reduced the most. 
 
 \subsection{Comparison of different geological models of pockmark structure}
-The discharge and salinity characteristics in the pockmarks vary between the three models. In the Patchy Aquitard model (Figure \ref{fig:pockmark_comparison}c-d), the vertical hydraulic conductivity of the Petone Marine Distal aquitard within the pockmarks is two times higher than outside. Compared to the Thin Aquitard model (Figure \ref{fig:pockmark_comparison}a-b), the amount of discharge is greater, and the discharge is fresher. This means that the aquitard is fresher under the pockmark for the Patchy Aquitard model. For the Aquitard Conduits model (Figure \ref{fig:pockmark_comparison}e-f), the discharge characteristics are the same as in the Thin Aquitard model, except at the conduits where a large amount of fresh groundwater is discharged.
+The discharge and salinity characteristics in the pockmarks vary between the three models.
+In the Patchy Aquitard model (Figure \ref{fig:pockmark_comparison}c-d), the vertical hydraulic conductivity of the Petone Marine Distal aquitard within the pockmarks is two times higher than outside.
+Compared to the Thin Aquitard model (Figure \ref{fig:pockmark_comparison}a-b), the amount of discharge is greater, and the discharge is fresher.
+This means that the aquitard is fresher under the pockmark for the Patchy Aquitard model.
+For the Aquitard Conduits model (Figure \ref{fig:pockmark_comparison}e-f), the discharge characteristics are the same as in the Thin Aquitard model, except at the conduits where a focused fresh groundwater occurs.
 
 \begin{figure}[h!]
 \centering
@@ -320,19 +339,25 @@ The discharge and salinity characteristics in the pockmarks vary between the thr
 
 The fit between modeled and observed salinities and fluxes varies across the three models (Figure \ref{fig:pockmark_comparison}g,h).
 \add[cl]{For the two salinity observations inside pockmarks, MC2-3 and MC2-1, where relatively saline water was observed, the salinity in the uppermost cell of the Petone Marine Distal at the measurement point is close to the average salinity in the sediment core for the Thin and Patchy Aquitard models} (Figure \ref{fig:pockmark_comparison}g).
-\add[cl]{The salinity at these points for the Aquitard Conduits model is much lower than the observed salinity.
+\add[cl]{The salinity at these points for the Aquitard Conduits model is much lower than the observed salinity. % todo update here
 This suggests that a high-conductivity pathway is not required to explain the salinity at these sampled points.}
 For the site outside of the pockmarks, MC2-2, where much lower salinity was observed, the Thin Aquitard and Patchy Aquitard models do not give a good fit (Figure \ref{fig:pockmark_comparison}g).
 \add[cl]{The better match with the Aquitard Conduits model suggests that a more hydraulically conductive flow path may be present at this location.}
 
-The flux observed at SV1 and SV6 only comes close to being reproduced by the Conduits model, whereas the Thin Aquitard and Patchy Aquitard produce fluxes many orders of magnitude lower \add[cl]{(Figure }\ref{fig:pockmark_comparison}h). This implies that conduits of some form could exist at these spring vents.
+The flux observed at SV1 and SV6 only comes closest to being reproduced by the Conduits model, whereas the Thin Aquitard and Patchy Aquitard produce fluxes many orders of magnitude lower \add[cl]{(Figure }\ref{fig:pockmark_comparison}h).
+This implies that conduits of some form could exist at these spring vents.
 
-\add[cl]{Fluxes and salinities at the observation points are expected to vary due to tidal forcing}. \add[cl]{This may help to explain disparities between the observations and the model. Model runs that included tidal forcing show that salinity at the observation points does not vary for the Thin Aquitard Model, and varies slightly by around 0.01 PSU across the tidal cycle for the Aquitard Conduits Model (see Supporting Figures 4a and 5a). This small variation would have little impact on the fit with the salinity observations (Figure 7g). For the flux observation points, fluxes vary across the tidal cycle for both the Thin Aquitard and Aquitard Conduits Model (see Supporting Figures 4b and 5). However, this tidal variation does not result in the orders-of-magnitude increase in flux that is required to match the model with the observations (Figure 7h).}
+\add[cl]{Fluxes and salinities at the observation points are expected to vary due to tidal forcing}.
+\add[cl]{This may help to explain disparities between the observations and the model. Model runs that included tidal forcing show that salinity at the observation points does not vary for the Thin Aquitard Model, and varies slightly by around 0.01 PSU across the tidal cycle for the Aquitard Conduits Model (see Supporting Figures 4a and 5a).
+This small variation would have little impact on the fit with the salinity observations (Figure 7g). For the flux observation points, fluxes vary across the tidal cycle for both the Thin Aquitard and Aquitard Conduits Model (see Supporting Figures 4b and 5).
+However, this tidal variation does not result in the orders-of-magnitude increase in flux that is required to match the model with the observations (Figure 7h).}
 
 \add[cl]{Another process which was not included in the models was mechanical dispersion. While dispersion is not expected to occur upgradient (downwards) from the seafloor boundary} \cite{irvine_upstream_2021}
 \add[cl]{, it could occur laterally from areas with greater downward dispersion around the measurement points.}
 Additional models were run to explore the potential effects of mechanical dispersion (see Supporting Information Figure 6).
-Including mechanical dispersion increases the modelled salinity at the measurement points by up to around 5 PSU for the Thin Aquitard Model, 10 PSU for the Patchy Aquitard Model, and 6 PSU for the Aquitard Conduits Model. For the Thin Aquitard Model and Patchy Aquitard model, this improves the fit with some of the observations and worsens the fit with others (Supporting Information Figure 6a,c). For the Aquitard Conduits Model, this improves the fit for all observations (Supporting Information 6f).
+Including mechanical dispersion increases the modelled salinity at the measurement points by up to around 5 PSU for the Thin Aquitard Model, 10 PSU for the Patchy Aquitard Model, and 6 PSU for the Aquitard Conduits Model.
+For the Thin Aquitard Model and Patchy Aquitard model, this improves the fit with some of the observations and worsens the fit with others (Supporting Information Figure 6a,c).
+For the Aquitard Conduits Model, this improves the fit for all observations (Supporting Information 6f).
 Including dispersion has no effect on the flux at the measurement points (Supporting Information Figure 6b,d,f).
 
 \add[]{The fit between each model and the observations is sensitive to the hydraulic properties assigned to the patches and conduits, which are themselves uncertain.
@@ -359,7 +384,7 @@ The differences between the three models are expected to bound the range of plau
 
 The response of groundwater flow and salinity distribution at pockmarks to sea-level rise and aquifer depletion depends on the geological model used to model the pockmark features. 
 \add[cl]{Flow under the pockmarks is reversed during the aquifer depletion scenario for all models} (Figure \ref{fig:pockmarks-response}b,e,h).
-\add[cl]{However,} the low hydraulic conductivity of the Petone Distal unit means that the salinity distribution beneath the pockmarks does not noticeably change during a 30-day period of a reversed hydraulic gradient \add[cl]{for the Thin and Patchy Aquitard models} (Figure \ref{fig:pockmarks-response}b and e).
+\add[cl]{However,} the low hydraulic conductivity of the Petone Distal unit means that the salinity distribution beneath the pockmarks does not noticeably change during a one year period of a reversed hydraulic gradient \add[cl]{for the Thin and Patchy Aquitard models} (Figure \ref{fig:pockmarks-response}b and e).
 For the Aquitard Conduits model, seawater intrusion does occur down into the aquifer through the conduits, causing salinization (Figure \ref{fig:pockmarks-response}h).
 For all models, if mechanical dispersion was included, the amount of seawater intrusion would be expected to be greater \cite{werner_seawater_2013}.
 
@@ -396,7 +421,7 @@ We did not observe convection cells such as those seen by \citeA{kaleris_modelli
 Comparing the results for three different pockmark geological models to the available discharge and salinity measurements, we are able to capture some of the observations. Two of the salinity measurements of \citeA{hoffmann_fresh_2023} were consistent with the Thin Aquitard model results, and this fit was improved slightly with the Patchy Aquitard model (Figure \ref{fig:pockmark_comparison}). The Aquitard Conduits model best explains the very fresh observation at MC2-2, which was taken in the space between pockmarks, where anomalous salinity and turbidity were detected in the water columns \cite{hoffmann_fresh_2023}. However, if the aquitard hydraulic conductivity was increased by a larger factor of 100 in the Patchy Aquitard model $(K_v=1.8\times10^{-3} \mathrm{m/day})$, then this could also explain the observed salinity at MC2-2  (Supporting Figure 4). This indicates that this observation is not necessarily associated with a conduit.  
 
 The high discharge fluxes observed at the spring vents by \citeA{harding_characteristics_2000}, and the narrow turbidity plumes observed by \citeA{hoffmann_fresh_2023} are most consistent with the Aquitards Conduit model.
-None of the results of the three geological models were consistent with the flux measurements, and the total flux through all of the pockmarks was on the order of 10 m$^3$/day for the Aquifer Conduits model, which had the most discharge.
+None of the results of the three geological models were consistent with the flux measurements, and the total flux through all of the pockmarks was on the order of 1 m$^3$/day for the Aquifer Conduits model, which had the most discharge.
 This is also significantly less than estimates of groundwater discharge at the pockmarks from regional modeling, 3000 m$^3$/day, across five areas with pockmarks in the harbour \cite{bennett_hutt_2024}.
 \add[]{However, this is water-balance output of a regional-scale model and carries substantial uncertainty, and it integrates over several pockmark areas rather than the single cluster modelled here.
 Hence, it should be considered an order-of-magnitude reference rather than an exact target.}
@@ -407,7 +432,7 @@ This would be very high for the silt and sand Petone Marine hydrostatic units, w
 Further sampling at the spring sites, such as the combined use of seepage meters and Amphibian Electrical Resistivity Tomography (AERT), may provide more reliable measurements of discharge rates to validate this} \cite{diego-feliu_combining_2025}.
 
 \add[]{The discharge across the seafloor (including the pockmarks) in the Thin Aquitard model is around 13.5 m$^3$/day} (Figure \ref{fig_pockmarks_present_day}a),
-\add[]{whereas discharge through an individual conduit (as represented in the Aquitard Conduits model) is on the order of 10 m$^3$/day} (Figure \ref{fig:pockmarks-response}g).
+\add[]{whereas discharge through an individual conduit (as represented in the Aquitard Conduits model) is on the order of 1 m$^3$/day} (Figure \ref{fig:pockmarks-response}g).
 \add{However, given that the exact properties of preferential flow paths in the study area are not constrained, this number is highly uncertain.
 Furthermore, it is unknown how extensive preferential discharge is across the rest of the harbour.
 Given the significant uncertainty in pockmark discharge, it is difficult to determine whether diffuse or focused submarine groundwater discharge is more significant in the model area.}
@@ -420,19 +445,20 @@ Given the significant uncertainty in pockmark discharge, it is difficult to dete
 
 Focused discharge through the pockmarks is a small part of the offshore water budget.
 The six modelled pockmarks discharge 0.59 m³/day in the Thin Aquitard model, around one percent of the discharge across the offshore model boundary.
-The Aquitard Conduits model discharges roughly 35 m³/day.
+The Aquitard Conduits model discharges roughly 15 m³/day.
 This is still well below the regional estimate for all pockmark areas.
 This is because diffuse discharge across the broader seafloor likely dominates the freshwater flux, rather than the pockmarks themselves.
 For this reason, the significance of the pockmarks lies less in discharge volume, and more in the pathways they may provide for seawater intrusion, and their local influence on seafloor salinity and the ecosystems it supports.
 
 In the Wellington Harbour, the largest concern around pockmarks is the potential for seawater intrusion into the aquifer due to reversed spring flow.
-After 30 days of an extreme aquifer depletion scenario, our results show saline groundwater reaching the Upper Waiwhetū aquifer only in the Aquitard Conduits model (Figure \ref{fig:pockmarks-response}). No intrusion occurred in the Thin and Patchy Aquitard models.
+After one year of an extreme aquifer depletion scenario, our results show saline groundwater reaching the Upper Waiwhetū aquifer only in the Aquitard Conduits model (Figure \ref{fig:pockmarks-response}). No intrusion occurred in the Thin and Patchy Aquitard models.
 This is because, in both of these models, the aquitard vertical hydraulic conductivity within the pockmarks is low, resulting in a slow advection of saline groundwater down into the aquifer.
 However, if the vertical hydraulic conductivity of the aquitard patches was greater, and aquifer depletion was sustained for a longer time, saline groundwater could enter the Upper Waiwhetū aquifer (Supporting Figure 5).
 
 Seawater intrusion through pockmarks is not only a problem for the salinization of onshore groundwater resources.
 With the recent focus on offshore fresh groundwater as a water resource \cite{bakken_submarine_2012, zamrsky_offshore_2022}, salinization of offshore groundwater through pockmarks may be a limiting factor for its exploitation \cite{gyopari_wellington_2018}.
-Given the occurrence of pockmarks in a number of offshore freshened groundwater hotspots (Figure \ref{fig:pockmarks_global_map}), understanding the potential for seawater intrusion through pockmarks is crucial. Therefore, it is essential to characterize the heterogeneity of the aquitard and its influence on submarine groundwater discharge at pockmarks to assess the vulnerability of offshore fresh groundwater through them.
+Given the occurrence of pockmarks in a number of offshore freshened groundwater hotspots (Figure \ref{fig:pockmarks_global_map}), understanding the potential for seawater intrusion through pockmarks is crucial.
+Therefore, it is essential to characterize the heterogeneity of the aquitard and its influence on submarine groundwater discharge at pockmarks to assess the vulnerability of offshore fresh groundwater through them.
 
 The identification of pockmarks and conduits to flow associated with them may prove a challenge to quantifying the risk they pose to a coastal aquifer system. The findings of \citeA{hoffmann_fresh_2023} show that high hydraulic conductivity flow paths exist in the area of the Hutt River pockmarks that are not necessarily located inside of the pockmarks. These flow paths pose less of a seawater intrusion threat than high hydraulic conductivity flow paths within pockmarks. This is because the 
 \change[cl]{increased pressure imposed by the larger seawater column in deeper areas means the hydraulic gradient is less readily reversed}{equivalent freshwater head in the saline aquitard is greater at the deeper points of the seafloor due to the density of the water column. Consequently, the head in the fresh aquifer requires less of a reduction to reverse the equivalent freshwater head gradient and resulting flow }\cite{post_variable_2022}. However, the fact that such flow paths do not have an obvious surface expression may make their identification difficult, compared to flow paths within pockmarks. As a result, they may go unnoticed and lead to unexpected salinization. 
