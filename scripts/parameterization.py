@@ -188,6 +188,14 @@ def  get_tdis_params(scenario='steady'):
             'nper': 12*10,
             'frequency': 10,
         }
+    if scenario=="transient_1y":
+        return {
+            'perlen': 365,
+            'nstp': 365,
+            'tsmult': 1,
+            'nper': 1,
+            'frequency': 365,
+        }
 
 def get_params_by_zone(case, param, hypothesis='null', patch_multiplier=None, conduit_k=None):
     zones = discretization.get_zone_array()
