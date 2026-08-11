@@ -224,20 +224,18 @@ def main_scenarios_revision_1_1_year_depletion():
     # # swi
     #     # modelling.create_run_model("7swi_s_r1", case='base', time='current',
     #     #                            scenario='swi_b', init='1ave_r1', tscenario='transient_1y')
-    #     # modelling.create_run_model("hk7swi_s_r1", case='base', time='current',
-    #     #                            scenario='swi_b', init='hk1ave_r1', tscenario='transient_1y', hypothesis="high_pockmark_k")
+    modelling.create_run_model("hk7swi_s_r1", case='base', time='current',
+                               scenario='swi_b', init='hk1ave_r1', tscenario='transient_1y', hypothesis="high_pockmark_k")
     # modelling.create_run_model("c7swi_s_r1", case='base', time='current',
     #                            scenario='swi_b', init='c1ave_r1', tscenario='transient_1y', hypothesis="conduits",
     #                            conduit_k=1)
 
-    names = ['7swi_s_r1', 'hk7swi_s_r1', 'c7swi_s_r1']
+    names = ['hk7swi_s_r1'] # , 'c7swi_s_r1']
     for name in names:
         plots.plot_salinity_at_pockmarks(name)
 
 
 def results():
-
-
     pass
 
 

@@ -158,9 +158,29 @@ def get_offshore():
     return offshore
 
 def get_grid_w_ibound() -> object:
+    dis_dir = project_dir.joinpath("data", "discretization")
+    dis_dir.mkdir(exist_ok=True)
+
+    if leapfrog_name is None:
+        dis_name = f"nlay={nlay}_nrow={nrows}_ncol={ncols}"
+    else:
+        dis_name = f"leapfrog_{leapfrog_name}"
+
+    dis_dir_name = dis_dir.joinpath(dis_name)
+    dis_dir_name.mkdir(exist_ok=True)
+    pkl_path = dis_dir_name.joinpath("grid_w_ibound.pkl")
+
+    if pkl_path.exists():
+        with open(pkl_path, "rb") as f:
+            return pickle.load(f)
+
     grid = get_grid()
     ibound = get_ibound()
     grid.idomain = ibound
+
+    with open(pkl_path, "wb") as f:
+        pickle.dump(grid, f)
+
     return grid
 
 

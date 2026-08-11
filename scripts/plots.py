@@ -57,7 +57,7 @@ def plot_unstructured_vectors(ax, cross_section, qx, qy, qz, section, hstride, v
     qh = []
     for count, (i, id) in enumerate(zip(plot_is, plot_ids)):
         # find segment
-        iseg = np.argwhere(cross_section.xcenters[i] < distances)[-1]
+        iseg = np.argwhere(cross_section.xcenters[i] < distances)[-1][0]
         # project qh to the line
         center_coords = cross_section.xypts[id][0]
         seg_end = (section.coords.xy[0][int(iseg + 1)], section.coords.xy[1][int(iseg + 1)])
@@ -853,7 +853,7 @@ def plot_salinity_at_pockmarks(name, ylim=None, head=False):
     # mapview = flopy.plot.PlotMapView(ax=ax_map, modelgrid=grid, layer=4)
     savepath = map_data_dir.joinpath("basemap.tif")
     base = rasterio.open(savepath)
-    savepath = map_data_dir.joinpath("model_area.shp")
+    savepath = data_dir.joinpath("model_area0.shp")
     model_area = gpd.read_file(savepath)
     extent = model_area.total_bounds
     show(base, ax=ax_map, alpha=0.7, zorder=0)
