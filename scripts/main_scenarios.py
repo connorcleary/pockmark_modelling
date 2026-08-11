@@ -142,22 +142,22 @@ def tidal_runs():
 def patches_higher_k():
     modelling.create_run_model("hhk_average", case='base', time='current',
                                scenario='summer_average', init='fresh', tscenario='steady', hypothesis="high_pockmark_k", patch_multiplier=20)
-    modelling.create_run_model("hhk_slr2", case='base', time='SLR2',
-                               scenario='summer_average', init="hhk_average", tscenario='slr2', hypothesis="high_pockmark_k", patch_multiplier=20)
+    # modelling.create_run_model("hhk_slr2", case='base', time='SLR2',
+    #                            scenario='summer_average', init="hhk_average", tscenario='slr2', hypothesis="high_pockmark_k", patch_multiplier=20)
     modelling.create_run_model('hhk_swib', case='base', time='current',
-                               scenario='swi_b', init='hhk_average', tscenario='transient', hypothesis="high_pockmark_k", patch_multiplier=20)
-    names = ['hhk_average', 'hhk_slr2', 'hhk_swib']
+                               scenario='swi_b', init='hhk_average', tscenario='transient_1y', hypothesis="high_pockmark_k", patch_multiplier=20)
+    names = ['hhk_average', 'hhk_swib']
     for name in names:
         plots.plot_salinity_at_pockmarks(name)
 
 def patches_even_higher_k():
     modelling.create_run_model("hhhk_average", case='base', time='current',
                                scenario='summer_average', init='fresh', tscenario='steady', hypothesis="high_pockmark_k", patch_multiplier=100)
-    modelling.create_run_model("hhhk_slr2", case='base', time='SLR2',
-                               scenario='summer_average', init="hhk_average", tscenario='slr2', hypothesis="high_pockmark_k", patch_multiplier=100)
+    # modelling.create_run_model("hhhk_slr2", case='base', time='SLR2',
+    #                            scenario='summer_average', init="hhk_average", tscenario='slr2', hypothesis="high_pockmark_k", patch_multiplier=100)
     modelling.create_run_model('hhhk_swib', case='base', time='current',
-                               scenario='swi_b', init='hhk_average', tscenario='transient', hypothesis="high_pockmark_k", patch_multiplier=100)
-    names = ['hhhk_average', 'hhhk_slr2', 'hhhk_swib']
+                               scenario='swi_b', init='hhhk_average', tscenario='transient_10y', hypothesis="high_pockmark_k", patch_multiplier=100)
+    names = ['hhhk_average', 'hhhk_swib']
     for name in names:
         plots.plot_salinity_at_pockmarks(name)
 
@@ -235,8 +235,8 @@ def main_scenarios_revision_1_1_year_depletion():
         plots.plot_salinity_at_pockmarks(name)
 
 
-def results():
-    pass
+def supporting_information_additional_runs():
+
 
 
 if __name__ == "__main__":
@@ -246,7 +246,7 @@ if __name__ == "__main__":
     # new_conduits_and_patches_steady()
     # low_swi_scenarios()
     # dropping_head_runs()
-    # patches_higher_k()
+    patches_higher_k()
     # conduits_higher_k()
     # low_long_swi_scenarios()
     # new_grid_scenarios()
@@ -254,4 +254,4 @@ if __name__ == "__main__":
     # tidal_runs()
     # tidal_runs()
     #  base_scenario_dispersion()
-    main_scenarios_revision_1_1_year_depletion()
+    # main_scenarios_revision_1_1_year_depletion()

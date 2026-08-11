@@ -1405,9 +1405,11 @@ def plot_alternate_hypotheses_pockmarks_and_model_vs_observed(names, salinity_nu
 
 def plot_alternative_hypotheses_changes(names=None, pockmark_number=5, dropping_names=None):
     if names == None:
-        names = [['1average', 'big1_swi', '3slr2'],
-                 ['hk1ave_new', 'hkbig1_swi_n', "hkslr2_new"],
-                 ['c1ave_new', 'cbig1_swi_n', "cslr2_new"]]
+        names = [['1ave_r1', '7swi_s_r1', '6slr2_r1'],
+                 ['hk1ave_r1', 'hk7swi_s_r1', 'hk6slr2_r1'],
+                 ['c1ave_r1', 'c7swi_s_r1', 'c6slr2_r1'],
+
+                 ]
     if dropping_names == "test":
         dropping_names = ['dropping_t', 'hkdropping_t', 'cdropping']
     elif dropping_names == False:
@@ -1432,7 +1434,7 @@ def plot_alternative_hypotheses_changes(names=None, pockmark_number=5, dropping_
         plot_pockmark(name, pockmark_number, grid, ax_plan=None, ax_section=ax, vectors=False, contours=True,
                       section_line=False, discharge_on_plan=False)
 
-        ax.set_ylim(-35, -10)
+        ax.set_ylim(-35, 0)
 
         if i % 3 != 0:
             ax.set_yticklabels([])
@@ -1467,7 +1469,7 @@ def plot_alternative_hypotheses_changes(names=None, pockmark_number=5, dropping_
     axs_results[1].set_ylabel(r'Total Pockmark Discharge [m$^3$/day]')
     axs_results[1].set_box_aspect(1)
     axs_results[1].legend(handles=handles, loc='upper right', fontsize=6)
-    axs_results[1].set_ylim(0, 100)
+    axs_results[1].set_ylim(0, 10)
 
     if dropping_names != None:
         plot_dropping_head_fluxes(dropping_names, ["tab:green", "orchid", "chocolate"], ["Thin", "Patchy", "Conduit"],
@@ -1484,7 +1486,8 @@ def plot_alternative_hypotheses_changes(names=None, pockmark_number=5, dropping_
         axs_results[0].legend(handles=[lines], loc='center left', fontsize=6)
 
     plt.tight_layout()
-    plt.savefig(f"/home/connor/PycharmProjects/pockmarks/figures/alternate_hypotheses_changes.png", dpi=600)
+    savepath = unbacked_dir.joinpath("figures/alternative_hypotheses_changes.png")
+    plt.savefig(savepath, dpi=600)
     plt.show()
 
 
@@ -1553,20 +1556,25 @@ def plot_conduit_and_patches_locations():
 def plot_multi_model_comparison():
     f, axs = plt.subplots(1, 2, figsize=(7, 3.5))
     plt.rcParams.update({'font.size': 8})
-    plot_salinity_comparison(['1average', 'hk1ave_new', 'c1ave_new', 'hhhk_average'],
-                             colors=['tab:green', 'orchid', 'chocolate', 'purple'],
+    plot_salinity_comparison(['1average', 'hk1ave_new', 'hhhk_average', 'c1ave_r1', 'c1ave_new'],
+                             colors=['tab:green', 'orchid', 'purple', 'chocolate', 'maroon'],
                              labels=[r'Thin ($K_v = 1.8 \times 10^{-5}$ m/day)',
-                                     r'Patchy ($K_v = 3.6 \times 10^{-5}$ m/day)', 'Conduits (K_v = 10 m/day)',
-                                     r'Patchy ($K_v = 1.8 \times 10^{-3}$ m/day)'],
+                                     r'Patchy ($K_v = 3.6 \times 10^{-5}$ m/day)',
+                                     r'Patchy ($K_v = 1.8 \times 10^{-3}$ m/day)'
+                                     'Conduits (K_v = 1 m/day)'
+                                     'Conduits (K_v = 10 m/day)'],
                              ax=axs[0], legend=False)
-    plot_flux_comparison(['1average', 'hk1ave_new', 'c1ave_new', 'hhhk_average'],
-                         colors=['tab:green', 'orchid', 'chocolate', 'purple'],
-                         labels=[r'Thin ($K_v = 1.8 \times 10^{-5}$ m/day)',
-                                 r'Patchy ($K_v = 3.6 \times 10^{-5}$ m/day)', 'Conduits ($K_v = 10$ m/day)',
-                                 r'Patchy ($K_v = 1.8 \times 10^{-3}$ m/day)'],
+    plot_flux_comparison(['1average', 'hk1ave_new', 'hhhk_average', 'c1ave_r1', 'c1ave_new'],
+                             colors=['tab:green', 'orchid', 'purple', 'chocolate', 'maroon'],
+                             labels=[r'Thin ($K_v = 1.8 \times 10^{-5}$ m/day)',
+                                     r'Patchy ($K_v = 3.6 \times 10^{-5}$ m/day)',
+                                     r'Patchy ($K_v = 1.8 \times 10^{-3}$ m/day)'
+                                     'Conduits (K_v = 1 m/day)'
+                                     'Conduits (K_v = 10 m/day)'],
                          ax=axs[1], legend=True)
     plt.tight_layout()
-    plt.savefig(f"/home/connor/PycharmProjects/pockmarks/figures/multi_model_comparison_2.png", dpi=600)
+    savepath = unbacked_dir.joinpath("figures/multi_model_comparison.png")
+    plt.savefig(f"{savepath}", dpi=600)
 
 
 def plot_longer_swi(models=None, names=None):
@@ -1663,13 +1671,13 @@ if __name__ == "__main__":
     # plot_changes_and_examples("base", names=names, examples=examples, version=1)
     # plot_examples_alternative_hypothesis()
     # plot_aquitard_thickness()
-    plot_alternate_hypotheses_pockmarks_and_model_vs_observed(['1ave_r1', 'hk1ave_r1', 'c1ave_r1'])
+    # plot_alternate_hypotheses_pockmarks_and_model_vs_observed(['1ave_r1', 'hk1ave_r1', 'c1ave_r1'])
     # plot_alternate_hypotheses_pockmarks_and_model_vs_observed(['1average'], 1)
-    # plot_alternative_hypotheses_changes(pockmark_number=5, dropping_names=False)
+    # plot_alternative_hypotheses_changes(pockmark_number=3, dropping_names=False)
     # plot_conduit_and_patches_locations()
-# plot_multi_model_comparison()
-# plot_longer_swi()
-# plot_conduit_and_patches_locations()
-# plot_boundary_conditions()
-# plot_tidal_effects_on_salinity_and_discharge_at_measumement_points("tidal_all_b")
+    plot_multi_model_comparison()
+    # plot_longer_swi()
+    # plot_conduit_and_patches_locations()
+    # plot_boundary_conditions()
+    # plot_tidal_effects_on_salinity_and_discharge_at_measumement_points("tidal_all_b")
 

@@ -2,6 +2,7 @@ import numpy as np
 import os
 import utils
 import pandas as pd
+from project_base import unbacked_dir
 
 
 def create_observation_comparison_table(name):
@@ -36,9 +37,10 @@ def pockmark_discharges_by_scenario(set, names):
         table.loc['total'].iloc[2*i+1] = np.sum([discharge*conc for discharge, conc in zip(data['discharge'], data['concentration'])])/np.sum(data['discharge'])
 
     string = table.to_latex(float_format="%.2f")
-    if not os.path.exists(f"/home/superuser/objective_3/outputs/comparisons/scenarios_{set}"):
-        os.makedirs(f"/home/superuser/objective_3/outputs/comparisons/scenarios_{set}")
-    with open(f"/home/superuser/objective_3/outputs/comparisons/scenarios_{set}/pockmark_discharges_by_scenario.txt", "w") as text_file:
+    dir = unbacked_dir.joinpath('outputs', 'comparisons', 'scenarios_'+set)
+    if not dir.exists():
+        os.makedirs(dir)
+    with open(dir.joinpath(f"pockmark_discharges_by_scenario.txt"), "w") as text_file:
         text_file.write(string)
 
 def create_multi_hypothesis_scenario_table(names, type):
@@ -66,6 +68,6 @@ def create_multi_hypothesis_scenario_table(names, type):
 
 if __name__=="__main__":
     # create_observation_comparison_table("1average")
-    pockmark_discharges_by_scenario('base', ['1average', '3slr2', 'hk1ave_new', "hkslr2_new", 'c1ave_new', "cslr2_new"])
+    pockmark_discharges_by_scenario('base', ['1ave_r1', '7swi_s_r1', '6slr2_r1', 'hk1ave_r1', 'hk7swi_s_r1', 'hk6slr2_r1', 'c1ave_r1', 'c7swi_s_r1', 'c6slr2_r1'])
     # create_observation_comparison_table("hk1summer")
     # create_multi_hypothesis_scenario_table(["1summer", "hk1summer"], "conc")
