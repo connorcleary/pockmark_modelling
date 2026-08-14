@@ -1,3 +1,4 @@
+\pdfminorversion=4
 \documentclass[draft, 10pt]{agujournal2019}
 \usepackage{graphicx} % Required for inserting images
 \usepackage{url} %this package should fix any errors with URLs in refs.
@@ -5,7 +6,7 @@
 \usepackage{amsmath}
 \usepackage{booktabs}
 \usepackage{tabularx}
-
+\usepackage[pdfencoding=auto, psdextra, bookmarks=false]{hyperref}
 \usepackage{tikz}
 \usepackage{graphicx}
 \usepackage{lipsum}
@@ -108,7 +109,7 @@ which may make the identification and characterization of any associated prefere
 
 \begin{figure}[h!]
 \makebox[\textwidth][c]{\includegraphics[width=1.35\textwidth]{global_map}}
-\caption{Pockmarks associated with groundwater flow in areas with offshore fresh groundwater or with ecosystems sustained by submarine groundwater discharge. Locations include the Skagerrak \cite{andresen_longevity_2021, hubscher_seismic_2006}, the Baltic Sea \cite{hoffmann_complex_2020, matciak_pockmarks_2024, virtasalo_submarine_2019}, the Corinth Gulf \cite{christodoulou_active_2003}, the Pearl River Delta \cite{sheng_offshore_2023, zhu_types_2021}, the U.S. Atlantic Margin \cite{gustafson_aquifer_2019, goff_modern_2019}, the Canterbury Bight \cite{micallef_3d_2020, micallef_multiple_2022}, and the Wellington Harbour \cite{hoffmann_fresh_2023}. (b) shows the location of observations of low salinity groundwater and pockmarks at Puck Bay, one of two locations in the Baltic Sea. (c) shows the locations of observations of low salinity groundwater and pockmarks at Martha's Vineyard on the U.S. Atlantic Margin. * denotes that the pockmarks are only implicitly related to groundwater flow by their co-occurrence.}
+\caption{Pockmarks associated with groundwater flow in areas with offshore fresh groundwater or with ecosystems sustained by submarine groundwater discharge. Locations include the Skagerrak \protect\cite{andresen_longevity_2021, hubscher_seismic_2006}, the Baltic Sea \protect\cite{hoffmann_complex_2020, matciak_pockmarks_2024, virtasalo_submarine_2019}, the Corinth Gulf \protect\cite{christodoulou_active_2003}, the Pearl River Delta \protect\cite{sheng_offshore_2023, zhu_types_2021}, the U.S. Atlantic Margin \protect\cite{gustafson_aquifer_2019, goff_modern_2019}, the Canterbury Bight \protect\cite{micallef_3d_2020, micallef_multiple_2022}, and the Wellington Harbour \cite{hoffmann_fresh_2023}. (b) shows the location of observations of low salinity groundwater and pockmarks at Puck Bay, one of two locations in the Baltic Sea. (c) shows the locations of observations of low salinity groundwater and pockmarks at Martha's Vineyard on the U.S. Atlantic Margin. * denotes that the pockmarks are only implicitly related to groundwater flow by their co-occurrence.
 \label{fig:pockmarks_global_map}
 \end{figure}
 
@@ -150,7 +151,7 @@ The processes of the study are transferable to the many other settings where poc
 
 While sustained aquifer depletion conditions that would lead to active seawater intrusion are not anticipated in the study location,
 they are an imminent concern in many locations around the world \cite{michael_science_2017, ferguson_vulnerability_2012, zamrsky_global_2024}.
-Where such conditions coincide with the occurrence of pockmarks} \cite{mendecki_saltwater_2025},
+Where such conditions coincide with the occurrence of pockmarks \cite{mendecki_saltwater_2025},
 understanding the potential for seawater intrusion through them may be important for aquifer management.
 
 \section{Study area: Te Whanganui a Tara Wellington Harbour}
@@ -181,7 +182,7 @@ especially considering the projected sea-level rise and the uncertain future of 
 Given the importance of this aquifer system, it is an appropriate site to explore the effects of climate change on groundwater discharge at pockmarks and what this means for seawater intrusion vulnerability.
 
 The main aquifer exploited in the Lower Hutt Valley aquifer system is the Upper Waiwhetū aquifer (Figure \ref{fig:pockmarks_info_composite}a). 
-The gravel aquifer was deposited during the last glaciation, approximately 30,000 years ago} and is highly transmissive \cite{bennett_hutt_2024, gyopari_lower_2014, shulmeister_timing_2019}.
+The gravel aquifer was deposited during the last glaciation, approximately 30,000 years ago and is highly transmissive \cite{bennett_hutt_2024, gyopari_lower_2014, shulmeister_timing_2019}.
 The aquifer is overlain by the Petone Marine Beds, which consist of three aquitard units, Upper, Distal, and Lower \cite{begg_revised_2023}.
 Both the Petone Marine Upper and Petone Marine Lower aquitards comprise gravelly sand, sand, and sandy silt.
 The Petone Marine Distal aquitard is significantly less permeable, being composed predominantly of silt and clay.
@@ -200,7 +201,7 @@ On average in the study area, the aquitard is estimated to have a thickness of 1
 \begin{figure}[h!]
 \centering
 \makebox[\textwidth][c]{\includegraphics[width=1.35\textwidth]{background_composite_revision2.png}}
-\caption{(a) Geological model of the study area, containing the hydrostratigraphic units of interest, adapted from \citeA{begg_revised_2023}. Going downward, these are the Petone Marine Upper, Petone Marine Distal, and Petone Marine Lower aquitards, and the Upper Waiwhetū aquifer. On the surface of Petone Marine Distal aquitard, several pockmarks are visible. (b) Interpolated thickness of the Petone Marine Distal aquitard in the study area, based on the pockmark bathymetry and three-dimensional geological model of \citeA{begg_revised_2023}. (c) Proposed geological models of the pockmarks.}
+\caption{(a) Geological model of the study area, containing the hydrostratigraphic units of interest, adapted from \protect\citeA{begg_revised_2023}. Going downward, these are the Petone Marine Upper, Petone Marine Distal, and Petone Marine Lower aquitards, and the Upper Waiwhetū aquifer. On the surface of Petone Marine Distal aquitard, several pockmarks are visible. (b) Interpolated thickness of the Petone Marine Distal aquitard in the study area, based on the pockmark bathymetry and three-dimensional geological model of \citeA{begg_revised_2023}. (c) Proposed geological models of the pockmarks.
 \label{fig:pockmarks_info_composite}
 \end{figure}
 
@@ -276,7 +277,7 @@ A constant porosity of 0.35 is assumed.
 
 \begin{table}[h!]
 \centering
-\caption{Calibrated hydraulic properties \cite{bennett_hutt_2024}}
+\caption{Calibrated hydraulic properties \protect\cite{bennett_hutt_2024}}
 \begin{tabular}{llll}
 \hline
 Hydrostratigraphic unit & $K_h$ [m/day] & $K_v$ [m/day] & $S_s$ [1/m]  \\
@@ -331,7 +332,7 @@ Therefore, the results of the scenarios presented in the study are largely hypot
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.5\textwidth]{conduit_and_patches_locations.png}
-\caption{Locations of higher hydraulic conductivity patches of the aquitard in the Patchy Aquitard model and conduits in the Aquitard Conduits model. Where these locations correspond to the six pockmarks identified by \citeA{harding_characteristics_2000}, pockmark numbers are shown.}
+\caption{Locations of higher hydraulic conductivity patches of the aquitard in the Patchy Aquitard model and conduits in the Aquitard Conduits model. Where these locations correspond to the six pockmarks identified by \protect\citeA{harding_characteristics_2000}, pockmark numbers are shown.}
 \label{fig:patches_conduits_locations}
 \end{figure}
 %%
@@ -594,7 +595,7 @@ The differences between the three models are expected to bound the range of plau
 
 The response of groundwater flow and salinity distribution at pockmarks to sea-level rise and aquifer depletion depends on the geological model used to model the pockmark features. 
 Flow under the pockmarks is reversed during the aquifer depletion scenario for all models (Figure \ref{fig:pockmarks-response}b,e,h).
-However, the low hydraulic conductivity of the Petone Distal unit means that the salinity distribution beneath the pockmarks does not noticeably change during a one-year period of a reversed hydraulic gradient {for the Thin and Patchy Aquitard models (Figure \ref{fig:pockmarks-response}b and e).
+However, the low hydraulic conductivity of the Petone Distal unit means that the salinity distribution beneath the pockmarks does not noticeably change during a one-year period of a reversed hydraulic gradient for the Thin and Patchy Aquitard models (Figure \ref{fig:pockmarks-response}b and e).
 For the Aquitard Conduits model, seawater intrusion does occur down into the aquifer through the conduits, causing salinization (Figure \ref{fig:pockmarks-response}h).
 For all models, if mechanical dispersion was included, the amount of seawater intrusion would be expected to be greater \cite{werner_seawater_2013}.
 
@@ -758,7 +759,7 @@ Such profiles should be recorded along different pockmark transects,
 where submarine groundwater discharge had already been identified through anomalies in water-column measurements such as salinity and turbidity \cite{hoffmann_fresh_2023}.
 These profiles could be supplemented by cone penetration testing (CPT) within and around the pockmarks to characterize the sediment properties,
 and any associated heterogeneity \cite{reusch_giant_2015}.
-To further understand the effect of tidal dynamics on discharge, continuous salinity and acoustic doppler current profiler (ADCP) measurements could be taken} \cite{poulsen_detecting_2015}.
+To further understand the effect of tidal dynamics on discharge, continuous salinity and acoustic doppler current profiler (ADCP) measurements could be taken \cite{poulsen_detecting_2015}.
 The collection of such data may allow for the development of a stochastic representation of aquitard heterogeneity \cite{van_leer_investigating_2025}.
 This would facilitate more robust analysis of seawater intrusion vulnerability.
 
