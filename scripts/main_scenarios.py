@@ -188,35 +188,35 @@ def base_scenario_dispersion():
 
 def main_scenarios_revision_1():
 
-    # present day
-    modelling.create_run_model("1ave_r1", case='base', time='current',
-                               scenario='summer_average', init='fresh', tscenario='steady')
-    modelling.create_run_model("hk1ave_r1", case='base', time='current',
-                                 scenario='summer_average', init='fresh', tscenario='steady', hypothesis="high_pockmark_k")
-    modelling.create_run_model("c1ave_r1", case='base', time='current',
-                               scenario='summer_average', init='fresh', tscenario='steady', hypothesis="conduits", conduit_k=1)
+    # # present day
+    # modelling.create_run_model("1ave_r1", case='base', time='current',
+    #                            scenario='summer_average', init='fresh', tscenario='steady')
+    # modelling.create_run_model("hk1ave_r1", case='base', time='current',
+    #                              scenario='summer_average', init='fresh', tscenario='steady', hypothesis="high_pockmark_k")
+    # modelling.create_run_model("c1ave_r1", case='base', time='current',
+    #                            scenario='summer_average', init='fresh', tscenario='steady', hypothesis="conduits", conduit_k=1)
+    #
+    # # slr
+    # modelling.create_run_model("6slr2_r1", case='base', time='SLR2',
+    #                            scenario='summer_average', init="1ave_r1", tscenario='slr2')
+    # modelling.create_run_model("hk6slr2_r1", case='base', time='SLR2',
+    #                            scenario='summer_average', init="hk1ave_r1", tscenario='slr2',
+    #                            hypothesis="high_pockmark_k")
+    # modelling.create_run_model("c6slr2_r1", case='base', time='SLR2',
+    #                            scenario='summer_average', init="c1ave_r1", tscenario='slr2', hypothesis="conduits",
+    #                            conduit_k=1)
+    #
+    # # swi
+    # modelling.create_run_model("7swi_r1", case='base', time='current',
+    #                              scenario='swi_b', init='1ave_r1', tscenario='transient')
+    # modelling.create_run_model("hk7swi_r1", case='base', time='current',
+    #                            scenario='swi_b', init='hk1ave_r1', tscenario='transient', hypothesis="high_pockmark_k")
+    # modelling.create_run_model("c7swi_r1", case='base', time='current',
+    #                            scenario='swi_b', init='c1ave_r1', tscenario='transient', hypothesis="conduits", conduit_k=1)
 
-    # slr
-    modelling.create_run_model("6slr2_r1", case='base', time='SLR2',
-                               scenario='summer_average', init="1ave_r1", tscenario='slr2')
-    modelling.create_run_model("hk6slr2_r1", case='base', time='SLR2',
-                               scenario='summer_average', init="hk1ave_r1", tscenario='slr2',
-                               hypothesis="high_pockmark_k")
-    modelling.create_run_model("c6slr2_r1", case='base', time='SLR2',
-                               scenario='summer_average', init="c1ave_r1", tscenario='slr2', hypothesis="conduits",
-                               conduit_k=1)
-
-    # swi
-    modelling.create_run_model("7swi_r1", case='base', time='current',
-                                 scenario='swi_b', init='1ave_r1', tscenario='transient')
-    modelling.create_run_model("hk7swi_r1", case='base', time='current',
-                               scenario='swi_b', init='hk1ave_r1', tscenario='transient', hypothesis="high_pockmark_k")
-    modelling.create_run_model("c7swi_r1", case='base', time='current',
-                               scenario='swi_b', init='c1ave_r1', tscenario='transient', hypothesis="conduits", conduit_k=1)
 
 
-
-    names = ['1ave_r1', 'hk1ave_r1', 'c1ave_r1', '6slr2_r1', 'hk6slr2_r1', 'c6slr2_r1', '7swi_r1', 'hk7swi_r1', 'c7swi_r1']
+    names = ['1ave_r1']
     for name in names:
         plots.plot_salinity_at_pockmarks(name)
 
@@ -235,8 +235,6 @@ def main_scenarios_revision_1_1_year_depletion():
         plots.plot_salinity_at_pockmarks(name)
 
 
-def supporting_information_additional_runs():
-
 
 
 if __name__ == "__main__":
@@ -246,7 +244,7 @@ if __name__ == "__main__":
     # new_conduits_and_patches_steady()
     # low_swi_scenarios()
     # dropping_head_runs()
-    patches_higher_k()
+    # patches_higher_k()
     # conduits_higher_k()
     # low_long_swi_scenarios()
     # new_grid_scenarios()
@@ -255,3 +253,6 @@ if __name__ == "__main__":
     # tidal_runs()
     #  base_scenario_dispersion()
     # main_scenarios_revision_1_1_year_depletion()
+    names = ['1ave_r1']
+    for name in names:
+        plots.plot_salinity_at_pockmarks(name)

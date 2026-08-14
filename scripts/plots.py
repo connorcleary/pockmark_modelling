@@ -352,7 +352,7 @@ def plot_boundary_conditions(test_boundaries=False):
         ax_plan.yaxis.set_major_formatter(formattery)
 
         savedir = unbacked_dir.joinpath('figures')
-        plt.savefig(savedir.joinpath(f"{leapfrog_name}_boundary_conditions.png"), dpi=600)
+        plt.savefig(savedir.joinpath(f"{leapfrog_name}_boundary_conditions.png"), dpi=200, bbox_inches='tight')
 
 
 def plot_aquitard_thickness(modelgrid=False):
@@ -1049,7 +1049,7 @@ def plot_salinity_at_pockmarks(name, ylim=None, head=False):
 
     figdir = unbacked_dir.joinpath('figures')
     figdir.mkdir(parents=True, exist_ok=True)
-    plt.savefig(figdir.joinpath(f'{name}_pockmark_salinity.png'), dpi=600, transparent=True)
+    plt.savefig(figdir.joinpath(f'{name}_pockmark_salinity.png'), dpi=200, transparent=False, bbox_inches='tight')
 
     # plot concentration at pockmarks
     # plan view
@@ -1399,7 +1399,7 @@ def plot_alternate_hypotheses_pockmarks_and_model_vs_observed(names, salinity_nu
 
     plt.tight_layout()
     savepath = unbacked_dir.joinpath("figures/alternate_hypotheses_pockmarks_and_model_vs_observed.png")
-    plt.savefig(savepath, dpi=600)
+    plt.savefig(savepath, dpi=200, transparent=False, bbox_inches='tight')
     # plt.show()
 
 
@@ -1487,27 +1487,27 @@ def plot_alternative_hypotheses_changes(names=None, pockmark_number=5, dropping_
 
     plt.tight_layout()
     savepath = unbacked_dir.joinpath("figures/alternative_hypotheses_changes.png")
-    plt.savefig(savepath, dpi=600)
+    plt.savefig(savepath, dpi=200, transparent=False, bbox_inches='tight')
     plt.show()
 
 
 def plot_conduit_and_patches_locations():
     f, ax = plt.subplots(figsize=(5, 4))
     plt.rcParams.update({'font.size': 7})
-    base = rasterio.open("/home/connor/PycharmProjects/pockmarks/map/data/basemap.tif")
-    model_area = gpd.read_file('/home/connor/PycharmProjects/pockmarks/data/model_area0.shp')
+    base = rasterio.open("/home/connor/PycharmProjects/pockmark_modelling/data/basemap.tif")
+    model_area = gpd.read_file('/home/connor/PycharmProjects/pockmark_modelling/data/model_area0.shp')
     extent = model_area.total_bounds
     show(base, ax=ax, alpha=0.7, zorder=0)
     ax.set_xlim(extent[0], extent[2])
     ax.set_ylim(extent[1], extent[3])
     ax.set_xlabel('Nztm x [m]')
     ax.set_ylabel('Nztm y [m]')
-    patches = gpd.read_file('/home/connor/PycharmProjects/pockmarks/data/refinement_areas.shp', crs='EPSG:2193')
+    patches = gpd.read_file('/home/connor/PycharmProjects/pockmark_modelling/data/refinement_areas.shp', crs='EPSG:2193')
     patches.to_crs('EPSG:2193')
     patches.plot(ax=ax, edgecolors='black', color="orchid", zorder=10, alpha=1, lw=0.75, label="Patches")
-    points = np.genfromtxt("/home/connor/PycharmProjects/pockmarks/data/coordinates_from_harding_appendix.csv",
+    points = np.genfromtxt("/home/connor/PycharmProjects/pockmark_modelling/data/coordinates_from_harding_appendix.csv",
                            delimiter=',', skip_header=1)[:, 1:]
-    arbitrary = gpd.read_file('/home/connor/PycharmProjects/pockmarks/data/abritrary_pockmark_locations.shp',
+    arbitrary = gpd.read_file('/home/connor/PycharmProjects/pockmark_modelling/data/abritrary_pockmark_locations.shp',
                               crs='EPSG:2193')
     arbitrary.to_crs('EPSG:2193')
     # drop first point from abritray
@@ -1550,7 +1550,7 @@ def plot_conduit_and_patches_locations():
 
     savedir = unbacked_dir.joinpath('figures')
 
-    plt.savefig(savedir.joinpath("conduit_and_patches_locations.png"), dpi=600)
+    plt.savefig(savedir.joinpath("conduit_and_patches_locations.png"), dpi=300, bbox_inches='tight')
 
 
 def plot_multi_model_comparison():
@@ -1671,13 +1671,13 @@ if __name__ == "__main__":
     # plot_changes_and_examples("base", names=names, examples=examples, version=1)
     # plot_examples_alternative_hypothesis()
     # plot_aquitard_thickness()
-    # plot_alternate_hypotheses_pockmarks_and_model_vs_observed(['1ave_r1', 'hk1ave_r1', 'c1ave_r1'])
+    plot_alternate_hypotheses_pockmarks_and_model_vs_observed(['1ave_r1', 'hk1ave_r1', 'c1ave_r1'])
     # plot_alternate_hypotheses_pockmarks_and_model_vs_observed(['1average'], 1)
-    # plot_alternative_hypotheses_changes(pockmark_number=3, dropping_names=False)
+    plot_alternative_hypotheses_changes(pockmark_number=3, dropping_names=False)
     # plot_conduit_and_patches_locations()
-    plot_multi_model_comparison()
+    # plot_multi_model_comparison()
     # plot_longer_swi()
     # plot_conduit_and_patches_locations()
-    # plot_boundary_conditions()
+    plot_boundary_conditions()
     # plot_tidal_effects_on_salinity_and_discharge_at_measumement_points("tidal_all_b")
 
